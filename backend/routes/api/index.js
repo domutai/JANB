@@ -4,12 +4,6 @@ const { User } = require('../../db/models');
 
 router.use(restoreUser);
 
-router.get('/csrf/restore', (req, res) => {
-    const csrfToken = req.csrfToken();
-    res.cookie("XSRF-TOKEN", csrfToken);
-    res.status(200).json({ 'XSRF-Token': csrfToken });
-  });
-
 router.get('/set-token-cookie', async (_req, res) => {
     const user = await User.findOne({
       where: {
