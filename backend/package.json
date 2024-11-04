@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "migrate": "npx dotenv sequelize db:migrate",
+    "seed": "npx dotenv sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",
