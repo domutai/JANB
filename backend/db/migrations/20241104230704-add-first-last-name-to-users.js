@@ -2,7 +2,7 @@
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA || 'JANB';  
+  options.schema = process.env.SCHEMA || 'thanks_togar';  
 }
 
 /** @type {import('sequelize-cli').Migration} */
