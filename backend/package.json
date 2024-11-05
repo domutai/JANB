@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bin/www",
-    "build": "node psql-setup-script.js",
-    "dev": "nodemon ./bin/www",
-    "migrate": "npx dotenv sequelize db:migrate",
-    "seed": "npx dotenv sequelize db:seed:all",
-    "sequelize": "sequelize"
+    "sequelize": "sequelize",
+    "sequelize-cli": "sequelize-cli",
+    "start": "per-env",
+    "start:development": "nodemon ./bin/www",
+    "start:production": "node ./bin/www",
+    "build": "node psql-setup-script.js"
   },
   "keywords": [],
   "author": "",
