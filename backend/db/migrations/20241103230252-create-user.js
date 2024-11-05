@@ -3,7 +3,9 @@
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA || 'thanks_togar';  
-}
+ } //else {
+//   options.schema = 'thanks_togar'; // Default schema for non-production environments
+// }
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
