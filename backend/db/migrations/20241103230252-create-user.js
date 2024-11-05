@@ -2,12 +2,17 @@
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  
+  options.schema = process.env.SCHEMA || 'JANB';  
 }
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+
+    if (process.env.NODE_ENV === 'production') {
+      await queryInterface.sequelize.query(`CREATE SCHEMA IF NOT EXISTS ${options.schema};`);
+    }
+
     await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
