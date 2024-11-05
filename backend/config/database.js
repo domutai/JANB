@@ -19,7 +19,7 @@ module.exports = {
       }
     },
     define: {
-      schema: process.env.SCHEMA || 'public'
+      schema: process.env.SCHEMA || 'thanks_togar'
     }
   }
 };
