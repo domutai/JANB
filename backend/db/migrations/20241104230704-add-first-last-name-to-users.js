@@ -3,8 +3,6 @@
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA || 'public';  
- } else {
-   options.schema = 'public'; // Default schema for non-production environments
  }
 
 /** @type {import('sequelize-cli').Migration} */
