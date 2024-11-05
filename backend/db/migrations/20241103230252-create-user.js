@@ -9,9 +9,9 @@ if (process.env.NODE_ENV === 'production') {
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    // if (process.env.NODE_ENV === 'production') {
-    //   await queryInterface.sequelize.query(`CREATE SCHEMA IF NOT EXISTS ${options.schema};`);
-    // }
+    if (process.env.NODE_ENV === 'production') {
+      await queryInterface.sequelize.query(`CREATE SCHEMA IF NOT EXISTS ${options.schema};`);
+    }
 
     await queryInterface.createTable('Users', {
       id: {
