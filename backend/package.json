@@ -4,14 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bin/www",  
-    "start:dev": "nodemon ./bin/www",  
-    "start:prod": "node ./bin/www",  
+    "start": "node ./bin/www",
     "build": "node psql-setup-script.js",
+    "dev": "nodemon ./bin/www",
     "migrate": "npx dotenv sequelize db:migrate",
     "seed": "npx dotenv sequelize db:seed:all",
     "sequelize": "sequelize"
-  },
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
