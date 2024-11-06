@@ -60,7 +60,10 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
-router.use('/spots', spotsRouter);
+// router.use('/spots', spotsRouter); INCORRECT
+// REMEMBER IT SHOULD BE THE ROUTE AFTER API!
+
+router.use('/users', spotsRouter);
 
 
 router.post('/test', (req, res) => {
