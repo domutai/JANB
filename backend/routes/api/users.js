@@ -69,9 +69,8 @@ router.post(
   
       if (loggedInUser && loggedInUser.id === parseInt(userId)) {
         const user = await User.findByPk(userId, {
-          attributes: { 
-            exclude: ['hashedPassword', 'createdAt', 'updatedAt']
-          }
+          attributes: 
+            ['id', 'firstName', 'lastName', 'email', 'username']
       });
   
         if (!user) {
