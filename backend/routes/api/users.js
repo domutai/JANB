@@ -61,4 +61,35 @@ router.post(
     }
   );
 
+ 
+  router.get('/:userId', requireAuth, async (req, res) => {
+    const { userId } = req.params;
+  
+      const loggedInUser = req.user; 
+  
+      if (loggedInUser && loggedInUser.id === parseInt(userId)) {
+        const user = await User.findByPk(userId);
+  
+        if (!user) {
+          return res.status(200).json({ user: null });
+        }
+  
+        const safeUser = {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          username: user.username,
+        };
+  
+        return res.status(200).json({ user: safeUser });
+      }
+  
+      return res.status(200).json({
+        user: null, 
+      });
+  
+    });
+  
+
 module.exports = router;
