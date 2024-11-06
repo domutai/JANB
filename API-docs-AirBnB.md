@@ -4,10 +4,6 @@ JANB
 ## Database Schema Design
 
 `<insert database schema design here>`
-HERE'S OUR DRAFT 2, PLEASE LET US KNOW WHICH DESIGN YOU THINK IS BETTER
-
-![Database Schema Screenshot DRAFT 2](Images/JANBdraft2.png)
-https://dbdiagram.io/d/JANB-67211563b4216d5a28a0b9e9
 
 ![Database Schema Screenshot DRAFT 1](JANBdraft1.png)
 https://dbdiagram.io/d/JANB-draft-1-672133acb4216d5a28a3b9f6
@@ -99,7 +95,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * Route path: /users/login (is this fine or other suggestion, Alexi?)
+  * Route path: /users/login 
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -165,7 +161,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * Route path: /users/signup (is this fine or other suggestion, Alexi?)
+  * Route path: /users/signup 
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1171,7 +1167,7 @@ Update and return an existing booking.
 * Require proper authorization: Booking must belong to the current user
 * Request
   * Method: PATCH
-  * Route path: /bookings/:bookingId (is this fine or other suggestion, Alexi?)
+  * Route path: /bookings/:bookingId 
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1350,7 +1346,7 @@ Delete an existing image for a Review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /reviewImages/:reviewImageId (is this fine or other suggestion, Alexi?)
+  * Route path: /reviewImages/:reviewImageId 
   * Body: none
 
 * Successful Response
