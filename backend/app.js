@@ -81,7 +81,7 @@ app.use((err, _req, res, _next) => {
       title: err.title || 'Server Error',
       message: err.message,
       errors: err.errors,
-      stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+      stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
     });
   });
 
