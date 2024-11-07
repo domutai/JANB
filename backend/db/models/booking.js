@@ -1,12 +1,11 @@
-// models/Review.js
 //DEVELOPMENT
 
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class Review extends Model {}
+  class Booking extends Model {}
 
-  Review.init(
+  Booking.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -32,17 +31,13 @@ module.exports = (sequelize) => {
         },
         onDelete: 'CASCADE',
       },
-      review: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      stars: {
-        type: DataTypes.INTEGER,
+      startDate: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
-        validate: {
-          min: 1,
-          max: 5,
-        },
+      },
+      endDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -57,33 +52,27 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'Review',
-      tableName: 'Reviews',
+      modelName: 'Booking',
+      tableName: 'Bookings',
       timestamps: true,
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }
   );
 
-  Review.associate = (models) => {
-    Review.belongsTo(models.User, {
+  Booking.associate = (models) => {
+    Booking.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
       onDelete: 'CASCADE',
     });
 
-    Review.belongsTo(models.Spot, {
+    Booking.belongsTo(models.Spot, {
       foreignKey: 'spotId',
       as: 'spot',
       onDelete: 'CASCADE',
     });
-
-    Review.hasMany(models.ReviewImage, {
-      foreignKey: 'reviewId',
-      as: 'reviewImages',
-      onDelete: 'CASCADE',
-    });
   };
 
-  return Review;
+  return Booking;
 };

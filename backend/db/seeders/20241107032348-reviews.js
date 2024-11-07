@@ -15,8 +15,8 @@ module.exports = {
     await queryInterface.bulkInsert('Reviews', [
       {
         id: 1,
-        userId: 1,  // Assuming this user exists in the "Users" table
-        spotId: 1,  // Assuming this spot exists in the "Spots" table
+        userId: 1,  
+        spotId: 1,  
         review: 'This was an awesome spot!',
         stars: 5,
         createdAt: new Date(),
@@ -24,8 +24,8 @@ module.exports = {
       },
       {
         id: 2,
-        userId: 2,  // Another user
-        spotId: 1,  // Same spot as above
+        userId: 2,  
+        spotId: 1,  
         review: 'Had a great time here, highly recommend!',
         stars: 4,
         createdAt: new Date(),
@@ -33,8 +33,8 @@ module.exports = {
       },
       {
         id: 3,
-        userId: 3,  // Yet another user
-        spotId: 2,  // A different spot
+        userId: 3,  
+        spotId: 2,  
         review: 'Not bad, but could be better. Needs improvements.',
         stars: 3,
         createdAt: new Date(),

@@ -186,12 +186,12 @@ lat: {
       foreignKey: 'spotId',
       as: 'images',
     });
-  }
-//     Spot.hasMany(models.Booking, {
-//       foreignKey: 'spotId',
-//       as: 'bookings',
-//     });
-//   };
+    
+    Spot.hasMany(models.Booking, {
+      foreignKey: 'spotId',
+      as: 'bookings',
+    });
+  };
 
   return Spot;
 };
