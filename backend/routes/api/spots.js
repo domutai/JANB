@@ -139,6 +139,44 @@ const router = express.Router();
 
 router.use(restoreUser);
 
+//GET ALL SPOTS
+router.get('/', async (req, res) => {
+  try {
+    const spots = await Spot.findAll();
+
+    if (!spots || spots.length === 0) {
+      return res.status(404).json({ message: "No spots found" });
+    }
+
+    const orderedSpots = spots.map(spot => {
+      return {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        avgRating: spot.avgRating,
+        previewImage: spot.previewImage,
+      };
+    });
+
+    return res.status(200).json({ Spots: orderedSpots });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Something went wrong while fetching spots" });
+  }
+});
+
+
+//GET CURRENT USER SPOTS
 router.get('/:userId/spots', requireAuth, async (req, res) => {
   const { userId } = req.params;
 
@@ -162,7 +200,27 @@ router.get('/:userId/spots', requireAuth, async (req, res) => {
       return res.status(404).json({ message: "No spots found for this user" });
     }
 
-    return res.json({ Spots: spots });
+    const orderedSpots = spots.map(spot => {
+      return {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        avgRating: spot.avgRating,
+        previewImage: spot.previewImage,
+      };
+    });
+
+    return res.json({ Spots: orderedSpots });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Something went wrong while fetching spots" });
