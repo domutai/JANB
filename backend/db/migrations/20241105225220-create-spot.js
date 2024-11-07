@@ -75,8 +75,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', // Name of the table referenced
-          key: 'id', // Key in the users table
+          model: 'users', 
+          key: 'id', 
         },
         onDelete: 'CASCADE',
       },

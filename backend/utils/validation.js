@@ -15,6 +15,10 @@ const handleValidationErrors = (req, _res, next) => {
     err.errors = errors;
     err.status = 400;
     /*err.title = "Bad request.";*/
+
+    // CREATED TO: Remove the stack trace before passing the error to the next middleware
+    delete err.stack;
+
     next(err);
   }
   next();

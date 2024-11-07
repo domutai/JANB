@@ -78,7 +78,6 @@ const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
-    // You can add custom instance or static methods here if needed
     static associate(models) {
       Spot.belongsTo(models.User, {
         foreignKey: 'ownerId',
@@ -100,8 +99,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', // Name of the referenced table
-          key: 'id', // Column in the users table being referenced
+          model: 'users', 
+          key: 'id', 
         },
         onDelete: 'CASCADE',
       },
@@ -164,21 +163,20 @@ lat: {
     {
       sequelize,
       modelName: 'Spot',
-      tableName: 'Spots', // Explicitly specifying table name
-      timestamps: true, // Automatically manage createdAt and updatedAt
+      tableName: 'Spots', 
+      timestamps: true, 
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }
   );
 
  Spot.associate = (models) => {
-    // Define associations here
     Spot.belongsTo(models.User, {
       foreignKey: 'ownerId',
       as: 'owner',
       onDelete: 'CASCADE',
     });
-    
+
     Spot.hasMany(models.Review, {
       foreignKey: 'spotId',
       as: 'reviews',

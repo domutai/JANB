@@ -131,12 +131,16 @@
 // });
 
 // module.exports = router;
-
+//------------------------------
+//Jeff's Code
 
 const express = require('express');
 const { Spot, SpotImage, User, Review } = require('../../db/models');
 const { requireAuth, restoreUser } = require('../../utils/auth'); 
 const router = express.Router();
+
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');  
 
 router.use(restoreUser);
 
@@ -239,17 +243,17 @@ router.get('/:spotId', async (req, res) => {
       include: [
         {
           model: SpotImage,
-          as: 'images', // This is the alias you used for SpotImage association
+          as: 'images', 
           attributes: ['id', 'url', 'preview'],
         },
         {
-          model: User, // The owner is a User
-          as: 'owner', // Make sure you use the 'owner' alias here
+          model: User, 
+          as: 'owner', 
           attributes: ['id', 'firstName', 'lastName'],
         },
         {
           model: Review,
-          as: 'reviews', // Make sure to reference the correct alias for reviews
+          as: 'reviews', 
           attributes: ['stars'],
         },
       ],
@@ -299,7 +303,85 @@ router.get('/:spotId', async (req, res) => {
 });
 
 
+// CREATE A NEW SPOT
+const moment = require('moment');
 
+const validateCreateSpot = [
+  check('address')
+    .exists({ checkFalsy: true })
+    .withMessage('Street address is required'),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage('City is required'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('State is required'),
+  check('country')
+    .exists({ checkFalsy: true })
+    .withMessage('Country is required'),
+  check('lat')
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be within -90 and 90'),
+  check('lng')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be within -180 and 180'),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ max: 50 })
+    .withMessage('Name must be less than 50 characters'),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage('Description is required'),
+  check('price')
+    .isFloat({ min: 0 })
+    .withMessage('Price per day must be a positive number'),
+  handleValidationErrors
+];
+
+router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+  try {
+    // Create a new spot
+    const spot = await Spot.create({
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+      ownerId: req.user.id  
+    });
+    
+    const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+    const orderedSpot = {
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lng,
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: formattedCreatedAt,
+      updatedAt: formattedUpdatedAt,
+    };
+
+    return res.status(201).json(orderedSpot);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+});
 
 
 
