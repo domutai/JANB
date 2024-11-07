@@ -66,6 +66,7 @@ router.use('/users', usersRouter);
 router.use('/users', spotsRouter);
 
 router.use('/spots', spotsRouter);
+//FOUND OUT YOU CAN USE TWO SEPERATE ROUTE.USE FOR SAME 
 
 
 router.post('/test', (req, res) => {

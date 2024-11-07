@@ -1,3 +1,4 @@
+//ARIF'S CODE
 // const express = require('express');
 // const { Spot, SpotImage } = require('../../db/models');
 // const { requireAuth, restoreUser } = require('../../utils/auth');
@@ -133,7 +134,7 @@
 
 
 const express = require('express');
-const { Spot } = require('../../db/models');
+const { Spot, SpotImage, User, Review } = require('../../db/models');
 const { requireAuth, restoreUser } = require('../../utils/auth'); 
 const router = express.Router();
 
@@ -226,5 +227,80 @@ router.get('/:userId/spots', requireAuth, async (req, res) => {
     return res.status(500).json({ message: "Something went wrong while fetching spots" });
   }
 });
+
+
+//GET DETAILS OF A SPOT FROM AN ID
+router.get('/:spotId', async (req, res) => {
+  const { spotId } = req.params;
+
+  try {
+    const spot = await Spot.findOne({
+      where: { id: spotId },
+      include: [
+        {
+          model: SpotImage,
+          as: 'images', // This is the alias you used for SpotImage association
+          attributes: ['id', 'url', 'preview'],
+        },
+        {
+          model: User, // The owner is a User
+          as: 'owner', // Make sure you use the 'owner' alias here
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+        {
+          model: Review,
+          as: 'reviews', // Make sure to reference the correct alias for reviews
+          attributes: ['stars'],
+        },
+      ],
+    });
+
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    // Calculate average star rating
+    const numReviews = spot.reviews.length;
+    const avgStarRating = numReviews > 0 ? spot.reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews : 0;
+
+    const spotDetails = {
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lng,
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: spot.createdAt,
+      updatedAt: spot.updatedAt,
+      numReviews,
+      avgStarRating,
+      SpotImages: spot.images.map(image => ({
+        id: image.id,
+        url: image.url,
+        preview: image.preview,
+      })),
+      Owner: {
+        id: spot.owner.id,
+        firstName: spot.owner.firstName,
+        lastName: spot.owner.lastName,
+      },
+    };
+
+    return res.status(200).json(spotDetails);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+
+
 
 module.exports = router;

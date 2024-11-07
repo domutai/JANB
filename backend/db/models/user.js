@@ -64,5 +64,10 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
   });
+
+  User.associate = (models) => {
+    User.hasMany(models.Spot, { foreignKey: 'ownerId' });
+  };
+
   return User;
 };

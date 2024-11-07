@@ -1,3 +1,4 @@
+//PRODUCTION
 // 'use strict';
 
 // const { User } = require('../models');
@@ -61,6 +62,7 @@
 //   }
 // };
 
+//DEVELOPMENT
 'use strict';
 const { User } = require('../models');
 const bcrypt = require("bcryptjs");

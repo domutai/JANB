@@ -178,17 +178,17 @@ lat: {
       as: 'owner',
       onDelete: 'CASCADE',
     });
+    
+    Spot.hasMany(models.Review, {
+      foreignKey: 'spotId',
+      as: 'reviews',
+    });
+
+    Spot.hasMany(models.SpotImage, {
+      foreignKey: 'spotId',
+      as: 'images',
+    });
   }
-//     Spot.hasMany(models.Review, {
-//       foreignKey: 'spotId',
-//       as: 'reviews',
-//     });
-
-//     Spot.hasMany(models.SpotImage, {
-//       foreignKey: 'spotId',
-//       as: 'images',
-//     });
-
 //     Spot.hasMany(models.Booking, {
 //       foreignKey: 'spotId',
 //       as: 'bookings',
