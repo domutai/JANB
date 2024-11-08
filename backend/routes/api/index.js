@@ -74,6 +74,8 @@ router.use('/spots', spotsRouter);
 
 router.use('/users', reviewsRouter);
 
+router.use('/spots', reviewsRouter);
+
 
 router.use('/users', bookingsRouter);
 

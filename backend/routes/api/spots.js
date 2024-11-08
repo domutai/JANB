@@ -10,6 +10,8 @@ const { handleValidationErrors, } = require('../../utils/validation');
 
 router.use(restoreUser);
 
+
+
 //GET ALL SPOTS
 router.get('/', async (req, res) => {
   try {
@@ -20,6 +22,11 @@ router.get('/', async (req, res) => {
     }
 
     const orderedSpots = spots.map(spot => {
+
+      const moment = require('moment');
+      const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+      const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
       return {
         id: spot.id,
         ownerId: spot.ownerId,
@@ -32,8 +39,8 @@ router.get('/', async (req, res) => {
         name: spot.name,
         description: spot.description,
         price: spot.price,
-        createdAt: spot.createdAt,
-        updatedAt: spot.updatedAt,
+        createdAt: formattedCreatedAt,
+        updatedAt: formattedUpdatedAt,
         avgRating: spot.avgRating,
         previewImage: spot.previewImage,
       };
@@ -72,6 +79,12 @@ router.get('/:userId/spots', requireAuth, async (req, res) => {
     }
 
     const orderedSpots = spots.map(spot => {
+
+
+      const moment = require('moment');
+      const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+      const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
       return {
         id: spot.id,
         ownerId: spot.ownerId,
@@ -84,8 +97,8 @@ router.get('/:userId/spots', requireAuth, async (req, res) => {
         name: spot.name,
         description: spot.description,
         price: spot.price,
-        createdAt: spot.createdAt,
-        updatedAt: spot.updatedAt,
+        createdAt: formattedCreatedAt,
+        updatedAt: formattedUpdatedAt,
         avgRating: spot.avgRating,
         previewImage: spot.previewImage,
       };
@@ -133,6 +146,11 @@ router.get('/:spotId', async (req, res) => {
     const numReviews = spot.reviews.length;
     const avgStarRating = numReviews > 0 ? spot.reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews : 0;
 
+    
+    const moment = require('moment');
+    const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
     const spotDetails = {
       id: spot.id,
       ownerId: spot.ownerId,
@@ -145,8 +163,8 @@ router.get('/:spotId', async (req, res) => {
       name: spot.name,
       description: spot.description,
       price: spot.price,
-      createdAt: spot.createdAt,
-      updatedAt: spot.updatedAt,
+      createdAt: formattedCreatedAt,
+      updatedAt: formattedUpdatedAt,
       numReviews,
       avgStarRating,
       SpotImages: spot.images.map(image => ({
@@ -169,9 +187,8 @@ router.get('/:spotId', async (req, res) => {
 });
 
 
-// CREATE A NEW SPOT
-const moment = require('moment');
 
+// CREATE A NEW SPOT
 const validateCreateSpot = [
   check('address')
     .exists({ checkFalsy: true })
@@ -220,6 +237,7 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
       ownerId: req.user.id  
     });
     
+    const moment = require('moment');
     const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
     const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
