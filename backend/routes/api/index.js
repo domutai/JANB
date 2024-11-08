@@ -1,3 +1,4 @@
+//TEST CODE FROM AUTHENTICATE ME
 // const router = require('express').Router();
 // const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth.js');
 // const { User } = require('../../db/models');
@@ -48,6 +49,12 @@
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
+const spotsRouter = require('./spots.js');
+const reviewsRouter = require('./reviews.js');
+const bookingsRouter = require('./bookings.js');
+const spotImagesRouter = require('./spotimages.js');
+const reviewImagesRouter = require('./reviewimages.js');
+
 const { restoreUser } = require("../../utils/auth.js");
 
 // Connect restoreUser middleware to the API router
@@ -58,6 +65,26 @@ router.use(restoreUser);
 router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
+
+router.use('/users', spotsRouter);
+
+router.use('/spots', spotsRouter);
+
+router.use('/users', reviewsRouter);
+
+router.use('/spots', reviewsRouter);
+
+router.use('/reviews', reviewsRouter);
+
+router.use('/users', bookingsRouter);
+
+router.use('/spots', bookingsRouter);
+
+router.use('/bookings', bookingsRouter);
+
+router.use('/spotImages', spotImagesRouter);
+
+router.use('/reviewImages', reviewImagesRouter);
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });

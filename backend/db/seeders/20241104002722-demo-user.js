@@ -1,3 +1,4 @@
+PRODUCTION
 'use strict';
 
 const { User } = require('../models');
@@ -60,3 +61,42 @@ module.exports = {
     }, { schema: options.schema });
   }
 };
+
+//USERS SEED DEVELOPMENT
+// 'use strict';
+// const { User } = require('../models');
+// const bcrypt = require("bcryptjs");
+
+
+// /** @type {import('sequelize-cli').Migration} */
+// module.exports = {
+//   async up(queryInterface, Sequelize) {
+//     await queryInterface.bulkInsert('Users', [
+//       {
+//                 email: 'demo@user.io',
+//                 username: 'Demo-lition',
+//                 hashedPassword: bcrypt.hashSync('password'),
+//                 firstName: 'Demo',
+//                 lastName: 'User'
+//               },
+//               {
+//                 email: 'user1@user.io',
+//                 username: 'FakeUser1',
+//                 hashedPassword: bcrypt.hashSync('password2'),
+//                 firstName: 'Fake',
+//                 lastName: 'Userone'
+//               },
+//               {
+//                 email: 'user2@user.io',
+//                 username: 'FakeUser2',
+//                 hashedPassword: bcrypt.hashSync('password3'),
+//                 firstName: 'Faketwo',
+//                 lastName: 'Usertwo'
+//               }
+//     ]);
+//   },
+
+//   async down(queryInterface, Sequelize) {
+//     await queryInterface.bulkDelete('Users', null, {});
+//   }
+// };

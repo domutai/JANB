@@ -10,7 +10,7 @@
     "migrate": "npx dotenv sequelize db:migrate",
     "seed": "npx dotenv sequelize db:seed:all",
     "sequelize": "sequelize"
-},
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

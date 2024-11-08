@@ -95,7 +95,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * Route path: /users/login 
+  * Route path: /session
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -161,7 +161,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * Route path: /users/signup 
+  * Route path: /users
   * Headers:
     * Content-Type: application/json
   * Body:
