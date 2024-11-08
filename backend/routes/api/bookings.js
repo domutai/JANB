@@ -230,7 +230,144 @@ router.post('/:spotId/bookings', requireAuth, isSpotOwner, async (req, res) => {
 });
 
   
+//EDIT BOOKING
+router.patch('/:bookingId', requireAuth, async (req, res) => {
+  const { bookingId } = req.params;
+  const { startDate, endDate } = req.body;
+  const userId = req.user.id;
+
+  const booking = await Booking.findByPk(bookingId);
+  if (!booking) {
+    return res.status(404).json({
+      message: "Booking couldn't be found"
+    });
+  }
+
+  if (booking.userId !== userId) {
+    return res.status(403).json({
+      message: "You are not authorized to edit this booking"
+    });
+  }
+
+  if (moment(booking.endDate).isBefore(moment(), 'day')) {
+    return res.status(403).json({
+      message: "Past bookings can't be modified"
+    });
+  }
+
+  const errors = {};
   
+  if (!startDate || startDate.trim() === '') {
+    errors.startDate = 'startDate is required';
+  } else {
+    const start = moment(startDate);
+    if (!start.isValid()) {
+      errors.startDate = 'startDate must be a valid date';
+    } else if (start.isBefore(moment().startOf('day'))) {
+      errors.startDate = 'startDate cannot be in the past';
+    }
+  }
+
+  if (!endDate || endDate.trim() === '') {
+    errors.endDate = 'endDate is required';
+  } else {
+    const end = moment(endDate);
+    if (!end.isValid()) {
+      errors.endDate = 'endDate must be a valid date';
+    } else if (end.isBefore(moment(startDate))) {
+      errors.endDate = 'endDate cannot be on or before startDate';
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({
+      message: 'Bad Request',
+      errors
+    });
+  }
+
+  const conflictingBookings = await Booking.findAll({
+    where: {
+      spotId: booking.spotId,
+      [Op.or]: [
+        {
+          startDate: { [Op.between]: [startDate, endDate] },
+        },
+        {
+          endDate: { [Op.between]: [startDate, endDate] },
+        },
+        {
+          [Op.and]: [
+            { startDate: { [Op.lte]: endDate } },
+            { endDate: { [Op.gte]: startDate } },
+          ],
+        },
+      ],
+    },
+  });
+
+  if (conflictingBookings.length > 0) {
+    return res.status(403).json({
+      message: 'Sorry, this spot is already booked for the specified dates',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking',
+        endDate: 'End date conflicts with an existing booking',
+      },
+    });
+  }
+
+  booking.startDate = startDate;
+  booking.endDate = endDate;
+
+  await booking.save();
+
+  const formattedCreatedAt = moment(booking.createdAt).format('YYYY-MM-DD HH:mm:ss');
+  const formattedUpdatedAt = moment(booking.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+  return res.status(200).json({
+    id: booking.id,
+    spotId: booking.spotId,
+    userId: booking.userId,
+    startDate: booking.startDate,
+    endDate: booking.endDate,
+    createdAt: formattedCreatedAt,
+    updatedAt: formattedUpdatedAt,
+  });
+});
+
+
+//DELETE BOOKING
+router.delete('/:bookingId', requireAuth, async (req, res) => {
+  const { bookingId } = req.params;
+  const userId = req.user.id;
+
+  const booking = await Booking.findByPk(bookingId);
+  if (!booking) {
+    return res.status(404).json({
+      message: "Booking couldn't be found"
+    });
+  }
+
+  const spot = await Spot.findByPk(booking.spotId);
+  if (booking.userId !== userId && spot.ownerId !== userId) {
+    return res.status(403).json({
+      message: "You are not authorized to delete this booking"
+    });
+  }
+
+  if (moment(booking.startDate).isBefore(moment(), 'day')) {
+    return res.status(403).json({
+      message: "Bookings that have been started can't be deleted"
+    });
+  }
+
+  await booking.destroy();
+
+  return res.status(200).json({
+    message: "Successfully deleted"
+  });
+});
+
 
   
   module.exports = router;

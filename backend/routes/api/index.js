@@ -82,6 +82,8 @@ router.use('/users', bookingsRouter);
 
 router.use('/spots', bookingsRouter);
 
+router.use('/bookings', bookingsRouter);
+
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
 });
