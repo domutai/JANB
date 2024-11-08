@@ -5,25 +5,99 @@ const { Spot, SpotImage, User, Review } = require('../../db/models');
 const { requireAuth, restoreUser } = require('../../utils/auth'); 
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator');
-const { handleValidationErrors, } = require('../../utils/validation');  
+const { check, validationResult, query } = require('express-validator');
+const { handleValidationErrors, } = require('../../utils/validation'); 
+const { Op } = require('sequelize'); 
+
+const moment = require('moment');
 
 router.use(restoreUser);
 
+//QUERY SPOTS + GET ALL SPOTS
+const validatePageSize = (page, size) => {
+  const errors = {};
+  if (page && (!Number.isInteger(Number(page)) || Number(page) < 1)) {
+    errors.page = 'Page must be greater than or equal to 1';
+  }
+  if (size && (!Number.isInteger(Number(size)) || Number(size) < 1 || Number(size) > 20)) {
+    errors.size = 'Size must be between 1 and 20';
+  }
+  return errors;
+};
 
+// Helper function to validate latitudes and longitudes
+const validateLatLng = (minLat, maxLat, minLng, maxLng) => {
+  const errors = {};
+  if (minLat && isNaN(minLat)) {
+    errors.minLat = 'Minimum latitude is invalid';
+  }
+  if (maxLat && isNaN(maxLat)) {
+    errors.maxLat = 'Maximum latitude is invalid';
+  }
+  if (minLng && isNaN(minLng)) {
+    errors.minLng = 'Minimum longitude is invalid';
+  }
+  if (maxLng && isNaN(maxLng)) {
+    errors.maxLng = 'Maximum longitude is invalid';
+  }
+  return errors;
+};
 
-//GET ALL SPOTS
+const validatePrice = (minPrice, maxPrice) => {
+  const errors = {};
+  
+  if (minPrice && isNaN(minPrice)) {
+    errors.minPrice = 'Minimum price must be greater than or equal to 0';
+  } else if (minPrice && parseFloat(minPrice) < 0) {
+    errors.minPrice = 'Minimum price must be greater than or equal to 0';
+  }
+
+  if (maxPrice && isNaN(maxPrice)) {
+    errors.maxPrice = 'Maximum price must be greater than or equal to 0';
+  } else if (maxPrice && parseFloat(maxPrice) < 0) {
+    errors.maxPrice = 'Maximum price must be greater than or equal to 0';
+  }
+
+  return errors;
+};
+
 router.get('/', async (req, res) => {
+  const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  const errors = {
+    ...validatePageSize(page, size),
+    ...validateLatLng(minLat, maxLat, minLng, maxLng),
+    ...validatePrice(minPrice, maxPrice),
+  };
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({
+      message: 'Bad Request',
+      errors
+    });
+  }
+
+  const pageNum = page ? parseInt(page) : 1;
+  const pageSize = size ? parseInt(size) : 5;
+
   try {
-    const spots = await Spot.findAll();
+    const spotQuery = {
+      where: {},
+      limit: pageSize,
+      offset: (pageNum - 1) * pageSize,
+    };
+    
+if (minLat) spotQuery.where.lat = { [Op.gte]: parseFloat(minLat) };
+if (maxLat) spotQuery.where.lat = { [Op.lte]: parseFloat(maxLat) };
+if (minLng) spotQuery.where.lng = { [Op.gte]: parseFloat(minLng) };
+if (maxLng) spotQuery.where.lng = { [Op.lte]: parseFloat(maxLng) };
 
-    if (!spots || spots.length === 0) {
-      return res.status(404).json({ message: "No spots found" });
-    }
+if (minPrice) spotQuery.where.price = { [Op.gte]: parseFloat(minPrice) };
+if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 
-    const orderedSpots = spots.map(spot => {
+    const spots = await Spot.findAll(spotQuery);
 
-      const moment = require('moment');
+    const formattedSpots = spots.map(spot => {
       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
@@ -46,12 +120,62 @@ router.get('/', async (req, res) => {
       };
     });
 
-    return res.status(200).json({ Spots: orderedSpots });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Something went wrong while fetching spots" });
+    const response = {
+      Spots: formattedSpots,
+    };
+
+    if (page || size) {
+      response.page = pageNum;
+      response.size = pageSize;
+    }
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });
+
+
+// //GET ALL SPOTS
+// router.get('/', async (req, res) => {
+//   try {
+//     const spots = await Spot.findAll();
+
+//     if (!spots || spots.length === 0) {
+//       return res.status(404).json({ message: "No spots found" });
+//     }
+
+//     const orderedSpots = spots.map(spot => {
+
+//       const moment = require('moment');
+//       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+//       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+//       return {
+//         id: spot.id,
+//         ownerId: spot.ownerId,
+//         address: spot.address,
+//         city: spot.city,
+//         state: spot.state,
+//         country: spot.country,
+//         lat: spot.lat,
+//         lng: spot.lng,
+//         name: spot.name,
+//         description: spot.description,
+//         price: spot.price,
+//         createdAt: formattedCreatedAt,
+//         updatedAt: formattedUpdatedAt,
+//         avgRating: spot.avgRating,
+//         previewImage: spot.previewImage,
+//       };
+//     });
+
+//     return res.status(200).json({ Spots: orderedSpots });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: "Something went wrong while fetching spots" });
+//   }
+// });
 
 
 //GET CURRENT USER SPOTS
@@ -407,6 +531,12 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
     });
   }
 });
+
+
+
+
+
+
 
 
 module.exports = router;
