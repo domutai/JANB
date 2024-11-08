@@ -80,6 +80,7 @@ router.use('/reviews', reviewsRouter);
 
 router.use('/users', bookingsRouter);
 
+router.use('/spots', bookingsRouter);
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
