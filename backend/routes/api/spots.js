@@ -1,137 +1,3 @@
-//ARIF'S CODE
-// const express = require('express');
-// const { Spot, SpotImage } = require('../../db/models');
-// const { requireAuth, restoreUser } = require('../../utils/auth');
-// const router = express.Router();
-
-// router.use(restoreUser);
-
-// // Create a new spot
-// router.post('/api/spots', async (req, res) => {
-//   try {
-//     const { address, city, state, country, lat, lng, name, description, price } = req.body;
-
-//     // Validation for required fields and price validation
-//     if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price) {
-//       return res.status(400).json({ message: "Missing required fields" });
-//     }
-
-//     if (price <= 0) {
-//       return res.status(400).json({ message: "Price must be a positive number" });
-//     }
-
-//     if (lat < -90 || lat > 90) {
-//       return res.status(400).json({ message: "Latitude must be within -90 and 90" });
-//     }
-
-//     if (lng < -180 || lng > 180) {
-//       return res.status(400).json({ message: "Longitude must be within -180 and 180" });
-//     }
-
-//     const spot = await Spot.create({
-//       address,
-//       city,
-//       state,
-//       country,
-//       lat,
-//       lng,
-//       name,
-//       description,
-//       price,
-//     });
-
-//     return res.status(201).json(spot);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
-
-// // Get all spots owned by a specific user
-// router.get('/users/:userId/spots', requireAuth, async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-//     if (parseInt(userId) !== req.user.id) {
-//       return res.status(403).json({ message: "You are not authorized to view these spots." });
-//     }
-//     const spots = await Spot.findAll({ where: { ownerId: userId } });
-//     return res.json({ Spots: spots });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
-
-// // Get a spot by ID
-// router.get('/api/spots/:spotId', async (req, res) => {
-//   const { spotId } = req.params;
-//   try {
-//     const spot = await Spot.findByPk(spotId, {
-//       include: [{
-//         model: SpotImage,
-//         attributes: ['id', 'url', 'preview'],
-//       }]
-//     });
-
-//     if (!spot) {
-//       return res.status(404).json({ message: "Spot couldn't be found" });
-//     }
-
-//     return res.json(spot);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
-
-// // Update a spot
-// router.patch('/api/spots/:spotId', async (req, res) => {
-//   const { spotId } = req.params;
-//   try {
-//     const spot = await Spot.findByPk(spotId);
-
-//     if (!spot) {
-//       return res.status(404).json({ message: "Spot couldn't be found" });
-//     }
-
-//     // Check if the user is the owner of the spot
-//     if (spot.ownerId !== req.user.id) {
-//       return res.status(403).json({ message: "You are not authorized to edit this spot" });
-//     }
-
-//     const updatedSpot = await spot.update(req.body);
-//     return res.json(updatedSpot);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
-
-// // Delete a spot
-// router.delete('/api/spots/:spotId', async (req, res) => {
-//   const { spotId } = req.params;
-//   try {
-//     const spot = await Spot.findByPk(spotId);
-
-//     if (!spot) {
-//       return res.status(404).json({ message: "Spot couldn't be found" });
-//     }
-
-//     // Check if the user is the owner of the spot
-//     if (spot.ownerId !== req.user.id) {
-//       return res.status(403).json({ message: "You are not authorized to delete this spot" });
-//     }
-
-//     await spot.destroy();
-//     return res.json({ message: "Successfully deleted" });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
-
-// module.exports = router;
-//------------------------------
 //Jeff's Code
 
 const express = require('express');
@@ -139,8 +5,8 @@ const { Spot, SpotImage, User, Review } = require('../../db/models');
 const { requireAuth, restoreUser } = require('../../utils/auth'); 
 const router = express.Router();
 
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');  
+const { check, validationResult } = require('express-validator');
+const { handleValidationErrors, } = require('../../utils/validation');  
 
 router.use(restoreUser);
 
@@ -383,37 +249,31 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
 });
 
 //ADD IMAGE TO A SPOT BASED ON SPOT ID
-// POST: Add an image to a spot
 router.post('/:spotId/images', requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
 
   try {
-    // Find the spot by ID
     const spot = await Spot.findByPk(spotId);
 
-    // Check if the spot exists
     if (!spot) {
       return res.status(404).json({
         message: "Spot couldn't be found"
       });
     }
 
-    // Check if the current user is the owner of the spot
     if (spot.ownerId !== req.user.id) {
       return res.status(403).json({
         message: "You are not authorized to add images to this spot"
       });
     }
 
-    // Create the image and associate it with the spot
     const newImage = await SpotImage.create({
       spotId,
       url,
       preview
     });
 
-    // Return the newly created image
     return res.status(201).json({
       id: newImage.id,
       url: newImage.url,
@@ -426,5 +286,109 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
     });
   }
 });
+
+//EDIT A SPOT
+const spotValidation = [
+  check('address')
+    .exists({ checkFalsy: true })
+    .withMessage('Street address is required'),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage('City is required'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('State is required'),
+  check('country')
+    .exists({ checkFalsy: true })
+    .withMessage('Country is required'),
+  check('lat')
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be within -90 and 90'),
+  check('lng')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be within -180 and 180'),
+  check('name')
+    .isLength({ max: 50 })
+    .withMessage('Name must be less than 50 characters'),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage('Description is required'),
+  check('price')
+    .isFloat({ min: 0 })
+    .withMessage('Price per day must be a positive number'),
+];
+
+router.patch('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
+  const { spotId } = req.params;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+
+  try {
+    const spot = await Spot.findByPk(spotId);
+
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    if (spot.ownerId !== req.user.id) {
+      return res.status(403).json({
+        message: "You are not authorized to edit this spot",
+      });
+    }
+
+    const updatedSpot = await spot.update({
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    });
+
+    return res.status(200).json(updatedSpot);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+
+// DELETE A SPOT
+router.delete('/:spotId', requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+
+  try {
+    const spot = await Spot.findByPk(spotId);
+
+    if (!spot) {
+      return res.status(404).json({
+        message: "Spot couldn't be found",
+      });
+    }
+
+    if (spot.ownerId !== req.user.id) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this spot",
+      });
+    }
+
+    await spot.destroy();
+
+    return res.status(200).json({
+      message: "Successfully deleted",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
 
 module.exports = router;
