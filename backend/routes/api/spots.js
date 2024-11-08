@@ -341,7 +341,6 @@ const validateCreateSpot = [
 router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
   try {
-    // Create a new spot
     const spot = await Spot.create({
       address,
       city,
@@ -383,6 +382,49 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
   }
 });
 
+//ADD IMAGE TO A SPOT BASED ON SPOT ID
+// POST: Add an image to a spot
+router.post('/:spotId/images', requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const { url, preview } = req.body;
 
+  try {
+    // Find the spot by ID
+    const spot = await Spot.findByPk(spotId);
+
+    // Check if the spot exists
+    if (!spot) {
+      return res.status(404).json({
+        message: "Spot couldn't be found"
+      });
+    }
+
+    // Check if the current user is the owner of the spot
+    if (spot.ownerId !== req.user.id) {
+      return res.status(403).json({
+        message: "You are not authorized to add images to this spot"
+      });
+    }
+
+    // Create the image and associate it with the spot
+    const newImage = await SpotImage.create({
+      spotId,
+      url,
+      preview
+    });
+
+    // Return the newly created image
+    return res.status(201).json({
+      id: newImage.id,
+      url: newImage.url,
+      preview: newImage.preview
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+});
 
 module.exports = router;
