@@ -88,6 +88,7 @@ lat: {
       sequelize,
       modelName: 'Spot',
       tableName: 'Spots', 
+      schema: 'public',
       timestamps: true, 
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',

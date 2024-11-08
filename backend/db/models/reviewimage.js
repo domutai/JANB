@@ -29,6 +29,7 @@ module.exports = (sequelize) => {
       sequelize,
       modelName: 'ReviewImage',
       tableName: 'ReviewImages',
+      schema: 'public',
       timestamps: false,
     }
   );

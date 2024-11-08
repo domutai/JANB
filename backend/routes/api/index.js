@@ -66,13 +66,9 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
-// router.use('/spots', spotsRouter); INCORRECT
-// REMEMBER IT SHOULD BE THE ROUTE AFTER API!
-
 router.use('/users', spotsRouter);
 
 router.use('/spots', spotsRouter);
-//FOUND OUT YOU CAN USE TWO SEPERATE ROUTER.USE FOR SAME TABLE
 
 router.use('/users', reviewsRouter);
 

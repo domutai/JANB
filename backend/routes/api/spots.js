@@ -25,7 +25,6 @@ const validatePageSize = (page, size) => {
   return errors;
 };
 
-// Helper function to validate latitudes and longitudes
 const validateLatLng = (minLat, maxLat, minLng, maxLng) => {
   const errors = {};
   if (minLat && isNaN(minLat)) {
