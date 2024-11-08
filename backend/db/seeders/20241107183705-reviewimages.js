@@ -1,3 +1,4 @@
+//REVIEW IMAGES SEED DEVELOPMENT
 'use strict';
 
 module.exports = {

@@ -1,3 +1,4 @@
+//BOOKINGS SEED DEVELOPMENT
 'use strict';
 
 module.exports = {

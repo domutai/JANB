@@ -120,7 +120,6 @@ router.get('/:userId/bookings', requireAuth, async (req, res) => {
   
 
   //CREATE A BOOKING FROM A SPOT ID
-  // Middleware to check if user is the owner of the spot
 const isSpotOwner = async (req, res, next) => {
   const { spotId } = req.params;
   const spot = await Spot.findByPk(spotId);

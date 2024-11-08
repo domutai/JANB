@@ -1,3 +1,4 @@
+//SPOT DEVELOPMENT
 'use strict';
 
 module.exports = {

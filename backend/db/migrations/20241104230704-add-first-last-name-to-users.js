@@ -44,7 +44,7 @@
 //   }
 // };
 
-//DEVELOPMENT
+//FIRST&LAST NAMES DEVELOPMENT
 'use strict';
 
 module.exports = {

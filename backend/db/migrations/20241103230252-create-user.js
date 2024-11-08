@@ -53,7 +53,7 @@
 //   }
 // };
 
-//DEVELOPMENT
+//USERS MIGRATION DEVELOPMENT
 'use strict';
 
 module.exports = {

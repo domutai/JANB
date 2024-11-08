@@ -1,4 +1,4 @@
-//DEVELOPMENT
+//REVIEWIMAGES DEVELOPMENT
 'use strict';
 
 module.exports = {

@@ -62,7 +62,7 @@
 //   }
 // };
 
-//DEVELOPMENT
+//USERS SEED DEVELOPMENT
 'use strict';
 const { User } = require('../models');
 const bcrypt = require("bcryptjs");
