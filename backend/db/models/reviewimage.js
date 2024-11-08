@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
   ReviewImage.associate = (models) => {
     ReviewImage.belongsTo(models.Review, {
       foreignKey: 'reviewId',
-      as: 'reviewImages',
+      as: 'review',
       onDelete: 'CASCADE',
     });
   };
