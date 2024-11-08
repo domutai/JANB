@@ -76,6 +76,7 @@ router.use('/users', reviewsRouter);
 
 router.use('/spots', reviewsRouter);
 
+router.use('/reviews', reviewsRouter);
 
 router.use('/users', bookingsRouter);
 

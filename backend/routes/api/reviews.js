@@ -205,9 +205,148 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
   }
 });
 
+//ADD AN IMAGE TO REVIEW ID
+router.post('/:reviewId/images', requireAuth, async (req, res) => {
+  const { reviewId } = req.params;
+  const { url } = req.body;
+  const userId = req.user.id; 
 
+  const review = await Review.findByPk(reviewId);
+  if (!review) {
+    return res.status(404).json({
+      message: "Review couldn't be found"
+    });
+  }
 
+  if (review.userId !== userId) {
+    return res.status(403).json({
+      message: "You are not authorized to add an image to this review"
+    });
+  }
 
+  const imageCount = await ReviewImage.count({
+    where: { reviewId }
+  });
+  if (imageCount >= 10) {
+    return res.status(403).json({
+      message: "Maximum number of images for this resource was reached"
+    });
+  }
+
+  if (!url) {
+    return res.status(400).json({
+      message: "Bad Request",
+      errors: { url: "Image URL is required" }
+    });
+  }
+
+  try {
+    const newImage = await ReviewImage.create({
+      reviewId,
+      url
+    });
+
+    return res.status(201).json({
+      id: newImage.id,
+      url: newImage.url
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+});
+
+//EDIT REVIEW
+router.patch('/:reviewId', requireAuth, async (req, res) => {
+  const { reviewId } = req.params;
+  const { review, stars } = req.body;
+  const userId = req.user.id; 
+
+  const existingReview = await Review.findByPk(reviewId);
+  if (!existingReview) {
+    return res.status(404).json({
+      message: "Review couldn't be found"
+    });
+  }
+
+  if (existingReview.userId !== userId) {
+    return res.status(403).json({
+      message: "You are not authorized to edit this review"
+    });
+  }
+
+  const errors = {};
+  if (!review || review.trim().length === 0) {
+    errors.review = "Review text is required";
+  }
+  if (typeof stars !== 'number' || stars < 1 || stars > 5) {
+    errors.stars = "Stars must be an integer from 1 to 5";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({
+      message: "Bad Request",
+      errors: errors
+    });
+  }
+
+  try {
+    existingReview.review = review;
+    existingReview.stars = stars;
+    await existingReview.save();
+
+    const formattedCreatedAt = moment(existingReview.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    const formattedUpdatedAt = moment(existingReview.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+    return res.status(200).json({
+      id: existingReview.id,
+      userId: existingReview.userId,
+      spotId: existingReview.spotId,
+      review: existingReview.review,
+      stars: existingReview.stars,
+      createdAt: formattedCreatedAt,
+      updatedAt: formattedUpdatedAt
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+});
+
+//DELETE REVIEW
+router.delete('/:reviewId', requireAuth, async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.user.id; 
+
+  const existingReview = await Review.findByPk(reviewId);
+  if (!existingReview) {
+    return res.status(404).json({
+      message: "Review couldn't be found"
+    });
+  }
+
+  if (existingReview.userId !== userId) {
+    return res.status(403).json({
+      message: "You are not authorized to delete this review"
+    });
+  }
+
+  try {
+    await existingReview.destroy();
+    return res.status(200).json({
+      message: "Successfully deleted"
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+});
 
 
   module.exports = router;
