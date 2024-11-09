@@ -1,4 +1,4 @@
-PRODUCTION
+//PRODUCTION
 'use strict';
 
 const { User } = require('../models');
