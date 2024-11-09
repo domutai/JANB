@@ -8,25 +8,47 @@ module.exports = (sequelize, DataTypes) => {
         as: 'owner',
         onDelete: 'CASCADE',
       });
+      // Spot.associate = (models) => {
+      //   Spot.belongsTo(models.User, {
+      //     foreignKey: 'ownerId',
+      //     as: 'owner',
+      //     onDelete: 'CASCADE',
+      //   });
+    
+        Spot.hasMany(models.Review, {
+          foreignKey: 'spotId',
+          as: 'reviews',
+        });
+    
+        Spot.hasMany(models.SpotImage, {
+          foreignKey: 'spotId',
+          as: 'images',
+        });
+        
+        Spot.hasMany(models.Booking, {
+          foreignKey: 'spotId',
+          as: 'bookings',
+        });
+      };
     }
-  }
+  
 
   Spot.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
+      // id: {
+      //   type: DataTypes.INTEGER,
+      //   primaryKey: true,
+      //   autoIncrement: true,
+      //   allowNull: false,
+      // },
       ownerId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users', 
-          key: 'id', 
-        },
-        onDelete: 'CASCADE',
+        allowNull: false
+        // references: {
+        //   model: 'users', 
+        //   key: 'id', 
+        // },
+        // onDelete: 'CASCADE',
       },
       address: {
         type: DataTypes.STRING,
@@ -94,29 +116,6 @@ lat: {
       updatedAt: 'updatedAt',
     }
   );
-
- Spot.associate = (models) => {
-    Spot.belongsTo(models.User, {
-      foreignKey: 'ownerId',
-      as: 'owner',
-      onDelete: 'CASCADE',
-    });
-
-    Spot.hasMany(models.Review, {
-      foreignKey: 'spotId',
-      as: 'reviews',
-    });
-
-    Spot.hasMany(models.SpotImage, {
-      foreignKey: 'spotId',
-      as: 'images',
-    });
-    
-    Spot.hasMany(models.Booking, {
-      foreignKey: 'spotId',
-      as: 'bookings',
-    });
-  };
 
   return Spot;
 };
