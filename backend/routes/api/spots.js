@@ -111,7 +111,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         lng: parseFloat(spot.lng),
         name: spot.name,
         description: spot.description,
-        price: spot.price,
+        price: parseFloat(spot.price),
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         avgRating: spot.avgRating,
