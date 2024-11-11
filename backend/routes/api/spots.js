@@ -178,7 +178,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 
 
 //GET CURRENT USER SPOTS
-router.get('/:userId/spots', requireAuth, async (req, res) => {
+router.get('/current', requireAuth, async (req, res) => {
   const { userId } = req.params;
 
   const parsedUserId = parseInt(userId);
@@ -187,7 +187,7 @@ router.get('/:userId/spots', requireAuth, async (req, res) => {
   }
 
   if (req.user.id !== parseInt(userId)) {
-    return res.status(403).json({
+    return res.status(401).json({
       message: "You are not authorized to view this user's spots",
     });
   }
