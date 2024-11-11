@@ -143,7 +143,7 @@ router.get('/:spotId/reviews', async (req, res) => {
       include: [
         {
           model: User,
-          // as: 'user',
+          as: 'user', 
           attributes: ['id', 'firstName', 'lastName'],
         },
         {
@@ -174,7 +174,7 @@ router.get('/:spotId/reviews', async (req, res) => {
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         User: {
-          id: review.User.id,
+          id: review.user.id, //test upper case U to u
           firstName: review.User.firstName,
           lastName: review.User.lastName,
         },
