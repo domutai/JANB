@@ -82,7 +82,7 @@ router.use('/spots', bookingsRouter);
 
 router.use('/bookings', bookingsRouter);
 
-router.use('/spotImages', spotImagesRouter);
+router.use('/spot-images', spotImagesRouter); //changed for MOCHA TEST from spotImages to spot-images
 
 router.use('/review-images', reviewImagesRouter); //changed for MOCHA TEST from reviewImages to review-images
 
