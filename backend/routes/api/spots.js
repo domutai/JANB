@@ -504,7 +504,6 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
 
 
 //EDIT A SPOT (AFTER MOCHA TEST: changed to PUT)
-// Validation middleware
 const spotValidation = [
   check('address')
     .exists({ checkFalsy: true })
@@ -535,30 +534,7 @@ const spotValidation = [
     .withMessage('Price per day must be a positive number'),
 ];
 
-// Custom error formatting middleware
-const formatValidationErrors = (err, req, res, next) => {
-  // Check if there are validation errors attached to the error object
-  if (err.errors) {
-    // Create an object to hold the formatted errors
-    const formattedErrors = {};
-
-    // Loop through the errors and format them as { fieldName: errorMessage }
-    for (const [field, message] of Object.entries(err.errors)) {
-      formattedErrors[field] = message;
-    }
-
-    // Respond with the 400 status and the expected error format
-    return res.status(400).json({
-      message: 'Validation Error',
-      errors: formattedErrors, // Send the errors as { fieldName: errorMessage }
-    });
-  }
-
-  // If no validation errors, pass the error to the next middleware
-  next(err);
-};
-
-router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, formatValidationErrors, async (req, res) => {
+router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
@@ -615,8 +591,6 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, form
     });
   }
 });
-
-
 
 
 // DELETE A SPOT
