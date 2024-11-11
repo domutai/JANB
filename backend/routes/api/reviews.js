@@ -243,9 +243,9 @@ router.get('/:spotId/reviews', async (req, res) => {
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         User: {
-          id: review.User.id, //test upper case U to u (Mocha)
-          firstName: review.User.firstName,
-          lastName: review.User.lastName,
+          id: review.user.id, //test upper case U to u (Mocha)
+          firstName: review.user.firstName, //test upper case U to u (Mocha)
+          lastName: review.user.lastName, //test upper case U to u (Mocha)
         },
         ReviewImages: review.ReviewImages.map(image => ({
           id: image.id,
