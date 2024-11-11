@@ -135,50 +135,8 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 });
 
 
-// //GET ALL SPOTS
-// router.get('/', async (req, res) => {
-//   try {
-//     const spots = await Spot.findAll();
-
-//     if (!spots || spots.length === 0) {
-//       return res.status(404).json({ message: "No spots found" });
-//     }
-
-//     const orderedSpots = spots.map(spot => {
-
-//       const moment = require('moment');
-//       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
-//       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-
-//       return {
-//         id: spot.id,
-//         ownerId: spot.ownerId,
-//         address: spot.address,
-//         city: spot.city,
-//         state: spot.state,
-//         country: spot.country,
-//         lat: spot.lat,
-//         lng: spot.lng,
-//         name: spot.name,
-//         description: spot.description,
-//         price: spot.price,
-//         createdAt: formattedCreatedAt,
-//         updatedAt: formattedUpdatedAt,
-//         avgRating: spot.avgRating,
-//         previewImage: spot.previewImage,
-//       };
-//     });
-
-//     return res.status(200).json({ Spots: orderedSpots });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: "Something went wrong while fetching spots" });
-//   }
-// });
-
-
-//GET CURRENT USER SPOTS (DEBUG: only changed endpoint to match test)
-// router.get('/current', requireAuth, async (req, res) => {
+//GET CURRENT USER SPOTS (BEFORE MOCHA TESTING)
+// router.get('/:userId/spots', requireAuth, async (req, res) => {
 //   const { userId } = req.params;
 
 //   const parsedUserId = parseInt(userId);
@@ -188,7 +146,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 
 //   if (req.user.id !== parseInt(userId)) {
 //     return res.status(401).json({
-//       message: "You are not authorized to view this user's spots",
+//       message: "Authentication required",
 //     });
 //   }
 
@@ -234,23 +192,19 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 //   }
 // });
 
-// GET CURRENT USER SPOTS
+// GET CURRENT USER SPOTS (Changed endpoint to /current to match Mocha Testing)
 router.get('/current', requireAuth, async (req, res) => {
-  // Use the user ID from the authenticated user (stored in req.user)
-  const userId = req.user.id;  // No need to parse from URL, use the authenticated user's ID
+  const userId = req.user.id; 
   
   try {
-    // Fetch spots that belong to the authenticated user
     const spots = await Spot.findAll({
       where: { ownerId: userId },
     });
 
-    // If no spots are found, return a 404 response
     if (!spots || spots.length === 0) {
       return res.status(404).json({ message: "No spots found for this user" });
     }
 
-    // Map through the spots to return a formatted response
     const orderedSpots = spots.map(spot => {
       const moment = require('moment');
       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
@@ -275,11 +229,10 @@ router.get('/current', requireAuth, async (req, res) => {
       };
     });
 
-    // Return the formatted spots in the response
     return res.json({ Spots: orderedSpots });
 
   } catch (err) {
-    // If an error occurs during the process, log the error and return a 500 response
+
     console.error(err);
     return res.status(500).json({ message: "Something went wrong while fetching spots" });
   }
@@ -480,7 +433,77 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
   }
 });
 
-//EDIT A SPOT
+//EDIT A SPOT (BEFORE MOCHA TEST)
+// const spotValidation = [
+//   check('address')
+//     .exists({ checkFalsy: true })
+//     .withMessage('Street address is required'),
+//   check('city')
+//     .exists({ checkFalsy: true })
+//     .withMessage('City is required'),
+//   check('state')
+//     .exists({ checkFalsy: true })
+//     .withMessage('State is required'),
+//   check('country')
+//     .exists({ checkFalsy: true })
+//     .withMessage('Country is required'),
+//   check('lat')
+//     .isFloat({ min: -90, max: 90 })
+//     .withMessage('Latitude must be within -90 and 90'),
+//   check('lng')
+//     .isFloat({ min: -180, max: 180 })
+//     .withMessage('Longitude must be within -180 and 180'),
+//   check('name')
+//     .isLength({ max: 50 })
+//     .withMessage('Name must be less than 50 characters'),
+//   check('description')
+//     .exists({ checkFalsy: true })
+//     .withMessage('Description is required'),
+//   check('price')
+//     .isFloat({ min: 0 })
+//     .withMessage('Price per day must be a positive number'),
+// ];
+
+// router.patch('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
+//   const { spotId } = req.params;
+//   const { address, city, state, country, lat, lng, name, description, price } = req.body;
+
+//   try {
+//     const spot = await Spot.findByPk(spotId);
+
+//     if (!spot) {
+//       return res.status(404).json({ message: "Spot couldn't be found" });
+//     }
+
+//     if (spot.ownerId !== req.user.id) {
+//       return res.status(403).json({
+//         message: "You are not authorized to edit this spot",
+//       });
+//     }
+
+//     const updatedSpot = await spot.update({
+//       address,
+//       city,
+//       state,
+//       country,
+//       lat,
+//       lng,
+//       name,
+//       description,
+//       price,
+//     });
+
+//     return res.status(200).json(updatedSpot);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: "Internal Server Error",
+//     });
+//   }
+// });
+
+
+//EDIT A SPOT (AFTER MOCHA TEST: changed to PUT)
 const spotValidation = [
   check('address')
     .exists({ checkFalsy: true })
@@ -511,7 +534,7 @@ const spotValidation = [
     .withMessage('Price per day must be a positive number'),
 ];
 
-router.patch('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
+router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
@@ -548,7 +571,6 @@ router.patch('/:spotId', requireAuth, spotValidation, handleValidationErrors, as
     });
   }
 });
-
 
 // DELETE A SPOT
 router.delete('/:spotId', requireAuth, async (req, res) => {
