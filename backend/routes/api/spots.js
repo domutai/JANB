@@ -177,33 +177,81 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 // });
 
 
-//GET CURRENT USER SPOTS
+//GET CURRENT USER SPOTS (DEBUG: only changed endpoint to match test)
+// router.get('/current', requireAuth, async (req, res) => {
+//   const { userId } = req.params;
+
+//   const parsedUserId = parseInt(userId);
+//   if (isNaN(parsedUserId)) {
+//     return res.status(400).json({ message: "Invalid user ID" });
+//   }
+
+//   if (req.user.id !== parseInt(userId)) {
+//     return res.status(401).json({
+//       message: "You are not authorized to view this user's spots",
+//     });
+//   }
+
+//   try {
+//     const spots = await Spot.findAll({
+//       where: { ownerId: userId },
+//     });
+
+//     if (!spots || spots.length === 0) {
+//       return res.status(404).json({ message: "No spots found for this user" });
+//     }
+
+//     const orderedSpots = spots.map(spot => {
+
+
+//       const moment = require('moment');
+//       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+//       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+//       return {
+//         id: spot.id,
+//         ownerId: spot.ownerId,
+//         address: spot.address,
+//         city: spot.city,
+//         state: spot.state,
+//         country: spot.country,
+//         lat: spot.lat,
+//         lng: spot.lng,
+//         name: spot.name,
+//         description: spot.description,
+//         price: spot.price,
+//         createdAt: formattedCreatedAt,
+//         updatedAt: formattedUpdatedAt,
+//         avgRating: spot.avgRating,
+//         previewImage: spot.previewImage,
+//       };
+//     });
+
+//     return res.json({ Spots: orderedSpots });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: "Something went wrong while fetching spots" });
+//   }
+// });
+
+// GET CURRENT USER SPOTS
 router.get('/current', requireAuth, async (req, res) => {
-  const { userId } = req.params;
-
-  const parsedUserId = parseInt(userId);
-  if (isNaN(parsedUserId)) {
-    return res.status(400).json({ message: "Invalid user ID" });
-  }
-
-  if (req.user.id !== parseInt(userId)) {
-    return res.status(401).json({
-      message: "You are not authorized to view this user's spots",
-    });
-  }
-
+  // Use the user ID from the authenticated user (stored in req.user)
+  const userId = req.user.id;  // No need to parse from URL, use the authenticated user's ID
+  
   try {
+    // Fetch spots that belong to the authenticated user
     const spots = await Spot.findAll({
       where: { ownerId: userId },
     });
 
+    // If no spots are found, return a 404 response
     if (!spots || spots.length === 0) {
       return res.status(404).json({ message: "No spots found for this user" });
     }
 
+    // Map through the spots to return a formatted response
     const orderedSpots = spots.map(spot => {
-
-
       const moment = require('moment');
       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
@@ -227,12 +275,16 @@ router.get('/current', requireAuth, async (req, res) => {
       };
     });
 
+    // Return the formatted spots in the response
     return res.json({ Spots: orderedSpots });
+
   } catch (err) {
+    // If an error occurs during the process, log the error and return a 500 response
     console.error(err);
     return res.status(500).json({ message: "Something went wrong while fetching spots" });
   }
 });
+
 
 
 //GET DETAILS OF A SPOT FROM AN ID
