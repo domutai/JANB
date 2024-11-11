@@ -51,11 +51,11 @@ router.use(restoreUser);
 
 // DELETE Review Image (AFTER MOCHA: changed end point from reviewImageId to imageId)
 router.delete('/:imageId', requireAuth, async (req, res) => {
-  const { reviewImageId } = req.params;
+  const { imageId } = req.params;
   const userId = req.user.id;
 
   try {
-    const reviewImage = await ReviewImage.findByPk(reviewImageId, {
+    const reviewImage = await ReviewImage.findByPk(imageId, {
       include: {
         model: Review,
         as: 'review',
