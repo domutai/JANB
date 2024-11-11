@@ -504,6 +504,7 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
 
 
 //EDIT A SPOT (AFTER MOCHA TEST: changed to PUT)
+// Validation middleware
 const spotValidation = [
   check('address')
     .exists({ checkFalsy: true })
@@ -534,23 +535,49 @@ const spotValidation = [
     .withMessage('Price per day must be a positive number'),
 ];
 
+// Custom middleware to handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // Collect error messages and the corresponding fields that failed validation
+    const errorMessages = {};
+    errors.array().forEach((error) => {
+      errorMessages[error.param] = error.msg;
+    });
+
+    // Send a 400 response with the errors
+    return res.status(400).json({
+      message: 'Validation Error',
+      errors: errorMessages,
+    });
+  }
+
+  next(); // No validation errors, proceed to the next middleware
+};
+
+// Route to edit a spot
 router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   try {
+    // Find the spot by its ID
     const spot = await Spot.findByPk(spotId);
 
+    // If the spot doesn't exist, return a 404 error
     if (!spot) {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
+    // Check if the user is the owner of the spot
     if (spot.ownerId !== req.user.id) {
       return res.status(403).json({
         message: "You are not authorized to edit this spot",
       });
     }
 
+    // Update the spot with the new data
     const updatedSpot = await spot.update({
       address,
       city,
@@ -563,10 +590,11 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
       price,
     });
 
-    const moment = require('moment');
+    // Format the dates using moment.js
     const formattedCreatedAt = moment(updatedSpot.createdAt).format('YYYY-MM-DD HH:mm:ss');
     const formattedUpdatedAt = moment(updatedSpot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
+    // Construct the response object
     const formattedSpot = {
       id: updatedSpot.id,
       ownerId: updatedSpot.ownerId,
@@ -583,6 +611,7 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
       updatedAt: formattedUpdatedAt,
     };
 
+    // Send the updated spot back as a JSON response
     return res.status(200).json(formattedSpot);
   } catch (error) {
     console.error(error);
@@ -591,6 +620,7 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
     });
   }
 });
+
 
 
 // DELETE A SPOT
