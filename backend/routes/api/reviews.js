@@ -143,7 +143,7 @@ router.get('/:spotId/reviews', async (req, res) => {
       include: [
         {
           model: User,
-          as: 'user',
+          // as: 'user',
           attributes: ['id', 'firstName', 'lastName'],
         },
         {
