@@ -72,11 +72,7 @@ router.use(restoreUser);
 
 // GET ALL REVIEWS BY CURRENT USER (MOCHA: changed endpoint to /current)
 router.get('/current', requireAuth, async (req, res) => {
-  const { userId } = req.params;
-
-  if (parseInt(userId) !== req.user.id) {
-    return res.status(403).json({ message: "You are not authorized to access these reviews." });
-  }
+  const userId = req.user.id;
 
   try {
     const reviews = await Review.findAll({
