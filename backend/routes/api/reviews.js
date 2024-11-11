@@ -198,7 +198,7 @@ router.get('/current', requireAuth, async (req, res) => {
 // GET ALL REVIEWS BY SPOT ID
 router.get('/:spotId/reviews', async (req, res) => {
   const { spotId } = req.params;
-  
+
   console.log("GET request received for spot ID:", spotId);  // Add this log to check if route is hit
 
   try {
@@ -250,11 +250,12 @@ router.get('/:spotId/reviews', async (req, res) => {
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         User: {
-          id: review.user.id, //changed to lowercase user
-          firstName: review.user.firstName, //changed to lowercase user
-          lastName: review.user.lastName, //changed to lowercase user
+          id: review.user.id,
+          firstName: review.user.firstName,
+          lastName: review.user.lastName,
         },
-        ReviewImages: review.reviewImages.map(image => ({
+        // Safely handle reviewImages (if undefined, return an empty array)
+        ReviewImages: (review.reviewImages || []).map(image => ({
           id: image.id,
           url: image.url,
         })),
@@ -270,6 +271,7 @@ router.get('/:spotId/reviews', async (req, res) => {
     });
   }
 });
+
   
 //CREATE REVIEW
 router.post('/:spotId/reviews', requireAuth, async (req, res) => {
