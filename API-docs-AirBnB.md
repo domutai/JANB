@@ -277,7 +277,7 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * Route path: /users/:userId/spots
+  * Route path: /users/:userId/spots (changed to /users/current to pass MOCHA tests)
   * Body: none
 
 * Successful Response
@@ -501,7 +501,7 @@ Updates and returns an existing spot.
 * Require Authentication: true
 * Require proper authorization: Spot must belong to the current user
 * Request
-  * Method: PATCH
+  * Method: PATCH (changed to PUT to pass MOCHA TESTS)
   * Route path: /spots/:spotId
   * Headers:
     * Content-Type: application/json
@@ -624,7 +624,7 @@ Returns all the reviews written by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * Route path: /users/:userId/reviews
+  * Route path: /users/:userId/reviews (changed to reviews/current to pass MOCHA)
   * Body: none
 
 * Successful Response
@@ -869,7 +869,7 @@ Update and return an existing review.
 * Require Authentication: true
 * Require proper authorization: Review must belong to the current user
 * Request
-  * Method: PATCH
+  * Method: PATCH (changed to PUT to pass MOCHA)
   * Route path: /reviews/:reviewId
   * Headers:
     * Content-Type: application/json
@@ -1311,7 +1311,7 @@ Delete an existing image for a Spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /spotImages/:spotImagesId
+  * Route path: /spotImages/:spotImagesId (changed to /spot-images/:imageId for MOCHA)
   * Body: none
 
 * Successful Response
@@ -1346,7 +1346,7 @@ Delete an existing image for a Review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * Route path: /reviewImages/:reviewImageId 
+  * Route path: /reviewImages/:reviewImageId (changed /review-images/:imageId for MOCHA)
   * Body: none
 
 * Successful Response
