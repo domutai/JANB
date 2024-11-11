@@ -563,7 +563,27 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
       price,
     });
 
-    return res.status(200).json(updatedSpot);
+    const moment = require('moment');
+    const formattedCreatedAt = moment(updatedSpot.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    const formattedUpdatedAt = moment(updatedSpot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+    const formattedSpot = {
+      id: updatedSpot.id,
+      ownerId: updatedSpot.ownerId,
+      address: updatedSpot.address,
+      city: updatedSpot.city,
+      state: updatedSpot.state,
+      country: updatedSpot.country,
+      lat: updatedSpot.lat,
+      lng: updatedSpot.lng,
+      name: updatedSpot.name,
+      description: updatedSpot.description,
+      price: updatedSpot.price,
+      createdAt: formattedCreatedAt,
+      updatedAt: formattedUpdatedAt,
+    };
+
+    return res.status(200).json(formattedSpot);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -571,6 +591,7 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
     });
   }
 });
+
 
 // DELETE A SPOT
 router.delete('/:spotId', requireAuth, async (req, res) => {
@@ -604,11 +625,6 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
     });
   }
 });
-
-
-
-
-
 
 
 
