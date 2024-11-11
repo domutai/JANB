@@ -525,7 +525,8 @@ const spotValidation = [
     .withMessage('Longitude must be within -180 and 180'),
   check('name')
     .isLength({ max: 50 })
-    .withMessage('Name must be less than 50 characters'),
+    .withMessage('Name must be less than 50 characters')
+    .exists({ checkFalsy: true }),
   check('description')
     .exists({ checkFalsy: true })
     .withMessage('Description is required'),
