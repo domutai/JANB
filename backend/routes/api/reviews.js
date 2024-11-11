@@ -125,7 +125,76 @@ router.get('/current', requireAuth, async (req, res) => {
   }
 });
   
-//GET ALL REVIEWS BY SPOT ID (KEEP GETTING SPOT SO CAN'T SOLVE)
+//GET ALL REVIEWS BY SPOT ID (KEEP GETTING SPOT SO CAN'T SOLVE, B4 MOCHA TESTS)
+// router.get('/:spotId/reviews', async (req, res) => {
+//   const { spotId } = req.params;
+
+//   try {
+//     const spot = await Spot.findByPk(spotId);
+
+//     if (!spot) {
+//       return res.status(404).json({
+//         message: "Spot couldn't be found",
+//       });
+//     }
+
+//     const reviews = await Review.findAll({
+//       where: { spotId: spotId },  
+//       include: [
+//         {
+//           model: User,
+//           as: 'user', 
+//           attributes: ['id', 'firstName', 'lastName'],
+//         },
+//         {
+//           model: ReviewImage,
+//           as: 'reviewImages',
+//           attributes: ['id', 'url'],
+//         }
+//       ],
+//       logging: console.log,  
+//     });
+
+//     if (reviews.length === 0) {
+//       return res.status(404).json({
+//         message: "No reviews found for this spot.",
+//       });
+//     }
+
+//     const formattedReviews = reviews.map(review => {
+//       const formattedCreatedAt = moment(review.createdAt).format('YYYY-MM-DD HH:mm:ss');
+//       const formattedUpdatedAt = moment(review.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+//       return {
+//         id: review.id,
+//         userId: review.userId,
+//         spotId: review.spotId,
+//         review: review.review,
+//         stars: review.stars,
+//         createdAt: formattedCreatedAt,
+//         updatedAt: formattedUpdatedAt,
+//         User: {
+//           id: review.User.id, 
+//           firstName: review.User.firstName,
+//           lastName: review.User.lastName,
+//         },
+//         ReviewImages: review.ReviewImages.map(image => ({
+//           id: image.id,
+//           url: image.url,
+//         })),
+//       };
+//     });
+
+//     return res.status(200).json({ Reviews: formattedReviews });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({
+//       message: "Internal server error",
+//     });
+//   }
+// });
+
+//GET ALL REVIEWS BY SPOT ID (MOCHA TESTS: )
 router.get('/:spotId/reviews', async (req, res) => {
   const { spotId } = req.params;
 
@@ -174,7 +243,7 @@ router.get('/:spotId/reviews', async (req, res) => {
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         User: {
-          id: review.user.id, //test upper case U to u
+          id: review.User.id, //test upper case U to u (Mocha)
           firstName: review.User.firstName,
           lastName: review.User.lastName,
         },
