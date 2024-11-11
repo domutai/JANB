@@ -84,7 +84,7 @@ router.use('/bookings', bookingsRouter);
 
 router.use('/spotImages', spotImagesRouter);
 
-router.use('/reviewImages', reviewImagesRouter);
+router.use('/review-images', reviewImagesRouter); //changed for MOCHA TEST from reviewImages to review-images
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
