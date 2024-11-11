@@ -535,49 +535,46 @@ const spotValidation = [
     .withMessage('Price per day must be a positive number'),
 ];
 
-// Custom middleware to handle validation errors
-const handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
+// Custom error formatting middleware
+const formatValidationErrors = (err, req, res, next) => {
+  // Check if there are validation errors attached to the error object
+  if (err.errors) {
+    // Create an object to hold the formatted errors
+    const formattedErrors = {};
 
-  if (!errors.isEmpty()) {
-    // Collect error messages and the corresponding fields that failed validation
-    const errorMessages = {};
-    errors.array().forEach((error) => {
-      errorMessages[error.param] = error.msg;
-    });
+    // Loop through the errors and format them as { fieldName: errorMessage }
+    for (const [field, message] of Object.entries(err.errors)) {
+      formattedErrors[field] = message;
+    }
 
-    // Send a 400 response with the errors
+    // Respond with the 400 status and the expected error format
     return res.status(400).json({
       message: 'Validation Error',
-      errors: errorMessages,
+      errors: formattedErrors, // Send the errors as { fieldName: errorMessage }
     });
   }
 
-  next(); // No validation errors, proceed to the next middleware
+  // If no validation errors, pass the error to the next middleware
+  next(err);
 };
 
-// Route to edit a spot
-router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, async (req, res) => {
+router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, formatValidationErrors, async (req, res) => {
   const { spotId } = req.params;
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   try {
-    // Find the spot by its ID
     const spot = await Spot.findByPk(spotId);
 
-    // If the spot doesn't exist, return a 404 error
     if (!spot) {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    // Check if the user is the owner of the spot
     if (spot.ownerId !== req.user.id) {
       return res.status(403).json({
         message: "You are not authorized to edit this spot",
       });
     }
 
-    // Update the spot with the new data
     const updatedSpot = await spot.update({
       address,
       city,
@@ -590,11 +587,10 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
       price,
     });
 
-    // Format the dates using moment.js
+    const moment = require('moment');
     const formattedCreatedAt = moment(updatedSpot.createdAt).format('YYYY-MM-DD HH:mm:ss');
     const formattedUpdatedAt = moment(updatedSpot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
-    // Construct the response object
     const formattedSpot = {
       id: updatedSpot.id,
       ownerId: updatedSpot.ownerId,
@@ -611,7 +607,6 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
       updatedAt: formattedUpdatedAt,
     };
 
-    // Send the updated spot back as a JSON response
     return res.status(200).json(formattedSpot);
   } catch (error) {
     console.error(error);
@@ -620,6 +615,7 @@ router.put('/:spotId', requireAuth, spotValidation, handleValidationErrors, asyn
     });
   }
 });
+
 
 
 
