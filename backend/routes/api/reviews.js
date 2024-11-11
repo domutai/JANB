@@ -195,41 +195,48 @@ router.get('/current', requireAuth, async (req, res) => {
 // });
 
 //GET ALL REVIEWS BY SPOT ID (MOCHA TESTS: )
+// GET ALL REVIEWS BY SPOT ID
 router.get('/:spotId/reviews', async (req, res) => {
   const { spotId } = req.params;
+  
+  console.log("GET request received for spot ID:", spotId);  // Add this log to check if route is hit
 
   try {
     const spot = await Spot.findByPk(spotId);
 
+    // If the spot doesn't exist
     if (!spot) {
       return res.status(404).json({
         message: "Spot couldn't be found",
       });
     }
 
+    // Fetch reviews for the given spotId
     const reviews = await Review.findAll({
-      where: { spotId: spotId },  
+      where: { spotId: spotId },
       include: [
         {
           model: User,
-          as: 'user', 
+          as: 'user',  // Alias for the user model
           attributes: ['id', 'firstName', 'lastName'],
         },
         {
           model: ReviewImage,
-          as: 'reviewImages',
+          as: 'reviewImages',  // Alias for the review images
           attributes: ['id', 'url'],
-        }
+        },
       ],
-      logging: console.log,  
+      logging: console.log,  // Log the executed SQL query for debugging
     });
 
+    // If no reviews found for the spot
     if (reviews.length === 0) {
       return res.status(404).json({
         message: "No reviews found for this spot.",
       });
     }
 
+    // Format the review data
     const formattedReviews = reviews.map(review => {
       const formattedCreatedAt = moment(review.createdAt).format('YYYY-MM-DD HH:mm:ss');
       const formattedUpdatedAt = moment(review.updatedAt).format('YYYY-MM-DD HH:mm:ss');
@@ -243,20 +250,21 @@ router.get('/:spotId/reviews', async (req, res) => {
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         User: {
-          id: review.user.id, //test upper case U to u (Mocha)
-          firstName: review.user.firstName, //test upper case U to u (Mocha)
-          lastName: review.user.lastName, //test upper case U to u (Mocha)
+          id: review.user.id, //changed to lowercase user
+          firstName: review.user.firstName, //changed to lowercase user
+          lastName: review.user.lastName, //changed to lowercase user
         },
-        ReviewImages: review.ReviewImages.map(image => ({
+        ReviewImages: review.reviewImages.map(image => ({
           id: image.id,
           url: image.url,
         })),
       };
     });
 
+    // Respond with the formatted reviews
     return res.status(200).json({ Reviews: formattedReviews });
   } catch (err) {
-    console.error(err);
+    console.error(err);  // Log the error
     return res.status(500).json({
       message: "Internal server error",
     });
