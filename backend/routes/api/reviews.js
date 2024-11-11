@@ -194,49 +194,45 @@ router.get('/current', requireAuth, async (req, res) => {
 //   }
 // });
 
-//GET ALL REVIEWS BY SPOT ID (MOCHA TESTS: )
+//GET ALL REVIEWS BY SPOT ID (MOCHA TESTS: changed Users to user and re-wrapped review.reviewImages.map)
 // GET ALL REVIEWS BY SPOT ID
 router.get('/:spotId/reviews', async (req, res) => {
   const { spotId } = req.params;
 
-  console.log("GET request received for spot ID:", spotId);  // Add this log to check if route is hit
+  console.log("GET request received for spot ID:", spotId);  
 
   try {
     const spot = await Spot.findByPk(spotId);
 
-    // If the spot doesn't exist
     if (!spot) {
       return res.status(404).json({
         message: "Spot couldn't be found",
       });
     }
 
-    // Fetch reviews for the given spotId
     const reviews = await Review.findAll({
       where: { spotId: spotId },
       include: [
         {
           model: User,
-          as: 'user',  // Alias for the user model
+          as: 'user',  
           attributes: ['id', 'firstName', 'lastName'],
         },
         {
           model: ReviewImage,
-          as: 'reviewImages',  // Alias for the review images
+          as: 'reviewImages',  
           attributes: ['id', 'url'],
         },
       ],
-      logging: console.log,  // Log the executed SQL query for debugging
+      logging: console.log,  
     });
 
-    // If no reviews found for the spot
     if (reviews.length === 0) {
       return res.status(404).json({
         message: "No reviews found for this spot.",
       });
     }
 
-    // Format the review data
     const formattedReviews = reviews.map(review => {
       const formattedCreatedAt = moment(review.createdAt).format('YYYY-MM-DD HH:mm:ss');
       const formattedUpdatedAt = moment(review.updatedAt).format('YYYY-MM-DD HH:mm:ss');
@@ -254,7 +250,6 @@ router.get('/:spotId/reviews', async (req, res) => {
           firstName: review.user.firstName,
           lastName: review.user.lastName,
         },
-        // Safely handle reviewImages (if undefined, return an empty array)
         ReviewImages: (review.reviewImages || []).map(image => ({
           id: image.id,
           url: image.url,
@@ -262,10 +257,9 @@ router.get('/:spotId/reviews', async (req, res) => {
       };
     });
 
-    // Respond with the formatted reviews
     return res.status(200).json({ Reviews: formattedReviews });
   } catch (err) {
-    console.error(err);  // Log the error
+    console.error(err);  
     return res.status(500).json({
       message: "Internal server error",
     });
@@ -393,7 +387,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 });
 
 //EDIT REVIEW
-router.patch('/:reviewId', requireAuth, async (req, res) => {
+router.put('/:reviewId', requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { review, stars } = req.body;
   const userId = req.user.id; 
