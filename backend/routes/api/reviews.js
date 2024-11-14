@@ -199,7 +199,7 @@ router.get('/current', requireAuth, async (req, res) => {
 router.get('/:spotId/reviews', async (req, res) => {
   const { spotId } = req.params;
 
-  console.log("GET request received for spot ID:", spotId);  
+  //console.log("GET request received for spot ID:", spotId);  
 
   try {
     const spot = await Spot.findByPk(spotId);
@@ -224,7 +224,7 @@ router.get('/:spotId/reviews', async (req, res) => {
           attributes: ['id', 'url'],
         },
       ],
-      logging: console.log,  
+      //logging: console.log,  
     });
 
     if (reviews.length === 0) {
