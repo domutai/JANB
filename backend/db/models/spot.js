@@ -110,7 +110,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Spot',
       tableName: 'Spots', 
-      schema: 'public',
+      //schema: 'public',
       timestamps: true, 
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',

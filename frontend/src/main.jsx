@@ -5,17 +5,21 @@ import App from './App';
 import './index.css';
 import configureStore from './store';
 
+import { restoreCSRF, csrfFetch } from './store/csrf';
+
 const store = configureStore();
 
-// Expose the store to the global window object only in development mode
-// if (import.meta.env.MODE !== 'production') {
-//   window.store = store;
-// }
+if (import.meta.env.MODE !== 'production') {
+  restoreCSRF();
 
-//Method 1 way of doing it:
-if (process.env.NODE_ENV !== 'production') {
+  window.csrfFetch = csrfFetch;
   window.store = store;
 }
+
+//Method 1 way of doing it:
+// if (process.env.NODE_ENV !== 'production') {
+//   window.store = store;
+// }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

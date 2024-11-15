@@ -54,7 +54,7 @@ module.exports = (sequelize) => {
       sequelize,
       modelName: 'Booking',
       tableName: 'Bookings',
-      schema: 'public',
+      //schema: 'public',
       timestamps: true,
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
