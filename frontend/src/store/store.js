@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
+import sessionReducer from './session'; //Phase 1
 
 
 // Check the current mode (development or production) and log it
@@ -11,6 +12,7 @@ if (import.meta.env.MODE === 'development') {
 
 const rootReducer = combineReducers({
   // ADD REDUCERS HERE
+  session: sessionReducer, //Phase 1
 });
 
 let enhancer;
