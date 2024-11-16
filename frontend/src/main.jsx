@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom/client'; //in method 1, it's just 'react-dom'
 import { Provider } from 'react-redux';
 import App from './App';
 import './index.css';
-import configureStore from './store';
+import store from './store';
 
 import { restoreCSRF, csrfFetch } from './store/csrf';
 
 import * as sessionActions from './store/session'; //Phase 1
 
-const store = configureStore();
 
 if (import.meta.env.MODE !== 'production') {
   restoreCSRF();

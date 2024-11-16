@@ -41,4 +41,19 @@ const sessionReducer = (state = initialState, action) => {
   }
 };
 
+//log out
+export const logout = () => async (dispatch) => {
+  await csrfFetch('/api/session', { method: 'DELETE' }); 
+  dispatch(removeUser());
+};
+
+//Thunk action for Restoring Session User across a refresh
+export const restoreUser = () => async (dispatch) => {
+  const response = await csrfFetch("/api/session");
+  const data = await response.json();
+  dispatch(setUser(data.user));
+  return response;
+};
+
+
 export default sessionReducer;
