@@ -41,11 +41,11 @@ const sessionReducer = (state = initialState, action) => {
   }
 };
 
-//log out
-export const logout = () => async (dispatch) => {
-  await csrfFetch('/api/session', { method: 'DELETE' }); 
-  dispatch(removeUser());
-};
+//log out Thunk Action Phase 1
+// export const logout = () => async (dispatch) => {
+//   await csrfFetch('/api/session', { method: 'DELETE' }); 
+//   dispatch(removeUser());
+// };
 
 //Thunk action for Restoring Session User across a refresh
 export const restoreUser = () => async (dispatch) => {
@@ -70,6 +70,15 @@ export const signup = (user) => async (dispatch) => {
   });
   const data = await response.json();
   dispatch(setUser(data.user));
+  return response;
+};
+
+//Logout Thunk Action Phase 3
+export const logout = () => async (dispatch) => {
+  const response = await csrfFetch('/api/session', {
+    method: 'DELETE'
+  });
+  dispatch(removeUser());
   return response;
 };
 
