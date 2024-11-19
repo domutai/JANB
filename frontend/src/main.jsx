@@ -8,6 +8,7 @@ import store from './store';
 import { restoreCSRF, csrfFetch } from './store/csrf';
 
 import * as sessionActions from './store/session'; //Phase 1
+import { Modal, ModalProvider } from './context/Modal';
 
 
 if (import.meta.env.MODE !== 'production') {
@@ -25,8 +26,11 @@ if (import.meta.env.MODE !== 'production') {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <ModalProvider>
     <Provider store={store}>
       <App />
+      <Modal />
     </Provider>
+    </ModalProvider>
   </React.StrictMode>
 );
