@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
       sequelize,
       modelName: 'SpotImage',
       tableName: 'SpotImages',
-      //schema: 'public',
+      schema: 'public',
       timestamps: false,
     }
   );
