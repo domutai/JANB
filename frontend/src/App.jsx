@@ -46,7 +46,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  console.log("App is rendering");
+  //console.log("App is rendering"); //Deploymet Phase said no Console Logs
   return <RouterProvider router={router} />;
 }
 
