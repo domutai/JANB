@@ -56,25 +56,34 @@
 
 
 //Phase 5
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'; 
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
+import janbIcon from '../../assets/Images/janbIcon.png';
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
 
   return (
-    <ul>
-      <li>
+     /* <li>
         <NavLink to="/">Home</NavLink>
-      </li>
+      </li> removed after authenticate*/
+  <nav className="navigation-container">
+    <NavLink to="/" className="logo-link">
+    <div className="app-logo-name">
+    <img src={janbIcon} alt="App Logo" className="app-logo" /> 
+    <span className="app-name">JANB</span>
+    </div>
+    </NavLink>
+    <ul className="navigation-list">
       {isLoaded && (
-        <li>
+        <li className="navigation-item">
           <ProfileButton user={sessionUser} />
         </li>
       )}
     </ul>
+    </nav>
   );
 }
 

@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import * as sessionActions from './store/session';
 //import SignupFormPage from './components/SignupFormPage';
 import Navigation from './components/Navigation';
+import SpotGrid from './components/SpotGrid';
+import SpotDetails from './components/SpotDetails';
 
 
 function Layout() {
@@ -31,7 +33,12 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
+        element: <SpotGrid />
+        //element: <h1>Welcome!</h1> //removed after authenicate me frontend
+      },
+      {
+        path: '/spots/:spotId',
+        element: <SpotDetails />
       },
       // {
       //   path: '/login',

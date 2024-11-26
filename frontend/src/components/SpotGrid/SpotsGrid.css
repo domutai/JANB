@@ -1,0 +1,26 @@
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Maximum of 4 spots per row */
+  gap: 16px; /* Adjust spacing between cards */
+  padding: 16px;
+  justify-content: center;
+}
+
+/* Breakpoints to adjust layout for smaller screens */
+@media (max-width: 1200px) {
+  .spot-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
+  }
+}
+
+@media (max-width: 800px) {
+  .spot-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for small screens */
+  }
+}
+
+@media (max-width: 500px) {
+  .spot-grid {
+    grid-template-columns: 1fr; /* 1 column for very small screens */
+  }
+}

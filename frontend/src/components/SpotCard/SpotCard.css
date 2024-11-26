@@ -1,0 +1,48 @@
+.spot-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+}
+
+.spot-card-link {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit text color */
+  display: block; /* Make the link span the whole card */
+}
+
+.spot-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.spot-card-details {
+  padding: 12px;
+}
+
+/* New Styles for Header */
+.spot-card-header { 
+  display: flex; /* Align city/state and rating in a row */
+  justify-content: space-between; /* Push rating to the far right */
+  align-items: center; /* Vertically center align city/state and rating */
+}
+
+.spot-card-details h2 { 
+  font-size: 0.9rem;
+  font-weight: normal; /* Adjust font weight */
+  margin: 6px 0;
+}
+
+.spot-rating { 
+  font-size: 0.9rem; /* Rating text size */
+  color: #555; /* Subtle gray color for rating */
+  white-space: nowrap; /* Prevent rating from wrapping to the next line */
+}
+
+.spot-card-details p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 4px 0 0; /* Adjust spacing to separate from header */
+}

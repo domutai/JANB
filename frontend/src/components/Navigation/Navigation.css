@@ -20,8 +20,57 @@
   .profile-dropdown li button {
     padding: 5px 10px;
     cursor: pointer;
-  } */
+  } Previous phase code in authenicate me*/
 
+  .navigation-container {
+    display: flex;
+    justify-content: space-between; /* Space between app name and profile button */
+    align-items: center; /* Vertically center content */
+    padding: 0 16px;
+    height: 60px; /* Optional: Set a height for the nav bar */
+    border-bottom: 2px solid #ddd;
+  }
+
+  .logo-link {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit text color */
+    display: block; /* Make the link span the whole card */
+  }
+  
+  /* Flexbox for app logo and name */
+.app-logo-name {
+  display: flex;
+  align-items: center; /* Align logo and text vertically */
+  cursor: pointer;
+}
+
+/* Icon styling */
+.app-logo {
+  height: 40px; /* Adjust size as needed */
+  width: 40px; /* Keep a square ratio */
+  margin-right: 8px; /* Add spacing between logo and app name */
+  cursor: pointer;
+}
+
+  /* App name styles */
+  .app-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333; /* Dark color for contrast */
+    text-decoration: none; /* Remove any link-style underline if needed */
+  }
+  
+  /* List styling for navigation items */
+  .navigation-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Flexbox for alignment */
+  }
+  
+  .navigation-item {
+    margin-left: auto; /* Ensures the item stays on the right */
+  }
   
   .profile-dropdown {
     position: absolute;

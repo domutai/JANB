@@ -1,0 +1,150 @@
+.spot-details {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Spot Info Header: Name and Location on top */
+.spot-info-header {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.spot-info-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.spot-info-header p {
+  margin: 5px 0;
+  font-size: 1.2rem;
+}
+
+  .spot-images {
+    display: grid;
+    grid-template-columns: 2fr 2fr; /* Large image takes up 2 fractions, smaller images take up 1 fraction */
+    grid-gap: 3px; /* Space between images */
+    max-width: 1000px;
+    margin: 0 auto; /* Center the images */
+  }
+  
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    grid-row: span 2; /* Make the main image span both rows */
+  }
+  
+  .additional-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for the smaller images */
+    gap: 3px; /* Small space between the images */
+  }
+  
+  .additional-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .spot-info {
+    display: flex;
+    justify-content: space-between; /* Space between elements */
+    align-items: center; /* Align vertically in the center */
+    margin-top: 20px; /* Space between images and this section */
+    gap: 20px; /* Add space between the host details and price-rating */
+  }
+
+  .host-details h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .host-details p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5; /* Add line height for better readability */
+  }
+
+  .spot-info .price-rating {
+    text-align: right;
+  }
+  
+  .price-rating {
+    border: 1px solid #ddd; /* Creates the border around the section */
+    padding: 20px; /* Adds spacing inside the box */
+    border-radius: 8px; /* Slightly round the corners */
+    width: 300px; /* Set a fixed width for consistency */
+    text-align: center; /* Center-align the text */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    }
+  
+    .price-rating-row {
+        display: flex; /* Align the price and rating horizontally */
+        justify-content: space-between; /* Space them apart */
+        align-items: center; /* Align vertically */
+        margin-bottom: 10px; /* Space between the row and the Reserve button */
+      }
+
+  .price {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .per-night {
+    font-size: 1rem; /* Smaller font size for "per night" */
+    color: #555; /* Lighter color for distinction */
+    margin-left: 5px; /* Add spacing between price and "per night" */
+  }
+  
+  
+  .rating {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .reserve-btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    width: 100%; /* Button spans the entire width */
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .reserve-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .reviews {
+    margin-top: 40px;
+  }
+  
+  .review-summary {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .review-list .review {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .post-review-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .post-review-btn:hover {
+    background-color: #218838;
+  }
+  
