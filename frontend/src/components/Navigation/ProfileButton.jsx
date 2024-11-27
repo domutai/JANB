@@ -143,9 +143,12 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -176,6 +179,11 @@ function ProfileButton({ user }) {
     closeMenu();
   };
 
+  const goToManageSpots = () => {
+    navigate('/manage-spots'); // Navigate to Manage Spots page
+    closeMenu(); // Close the menu after navigation
+  };
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
@@ -185,15 +193,17 @@ function ProfileButton({ user }) {
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
-          <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
-          </>
-        ) : (
+           <>
+           <li>Hello, {user.firstName}</li>
+           <li>{user.email}</li>
+           <li>
+             <button onClick={goToManageSpots}>Manage Spots</button>
+           </li>
+           <li>
+             <button onClick={logout}>Log Out</button>
+           </li>
+         </>
+       ) : (
           <>
             <OpenModalMenuItem
               itemText="Log In"

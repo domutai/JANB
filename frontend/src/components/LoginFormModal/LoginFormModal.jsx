@@ -59,7 +59,7 @@
 // export default LoginFormPage;
 
 //Phase 4
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
@@ -70,13 +70,26 @@ function LoginFormModal() {
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isDisabled, setIsDisabled] = useState(true);
   const { closeModal } = useModal();
+
+// Effect to enable button when form is valid
+useEffect(() => {
+  if (credential.length >= 4 && password.length >= 6) {
+    setIsDisabled(false); // Enable button if both fields are filled
+  } else {
+    setIsDisabled(true); // Disable button if any field is empty
+  }
+}, [credential, password]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
+    .then(() => {
+      closeModal();
+      window.location = '/'; // Redirect to homepage
+    })
       .catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) {
@@ -85,9 +98,22 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemoLogin = () => {
+    dispatch(sessionActions.login({ credential: 'Demo-lition', password: 'password' }))
+    .then(() => {
+      closeModal();
+      window.location = '/'; // Redirect to homepage
+    })
+      .catch((err) => console.error('Demo login failed', err));
+  };
+
   return (
     <>
       <h1>Log In</h1>
+      {/* Display error message at the top */}
+      {Object.keys(errors).length > 0 && (
+        <p className="error-message">{errors.credential || errors.password || 'Invalid credentials'}</p>
+      )}
       <form onSubmit={handleSubmit}>
         <label>
           Username or Email
@@ -107,13 +133,14 @@ function LoginFormModal() {
             required
           />
         </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
-        )}
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={isDisabled}>Log In</button>
       </form>
+      <button className="demo-user-btn" onClick={handleDemoLogin}>
+        Demo User
+      </button>
     </>
   );
 }
+
 
 export default LoginFormModal;

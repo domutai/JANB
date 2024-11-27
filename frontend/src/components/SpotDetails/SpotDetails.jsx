@@ -1,16 +1,28 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
 import './SpotDetails.css';
 
 const SpotDetails = () => {
   const { spotId } = useParams();
   const [spot, setSpot] = useState(null);
+  const [reviews, setReviews] = useState([]); // State for reviews
+
+  const user = useSelector((state) => state.session.user); // Access the logged-in user
 
   useEffect(() => {
     fetch(`/api/spots/${spotId}`)
       .then(res => res.json())
       .then(data => setSpot(data)) // Directly assign the spot data
       .catch(err => console.error("Error fetching spot details:", err));
+  }, [spotId]);
+
+   // Fetch reviews for the spot
+   useEffect(() => {
+    fetch(`/api/spots/${spotId}/reviews`)
+      .then(res => res.json())
+      .then(data => setReviews(data.Reviews || [])) // Assign reviews from the response
+      .catch(err => console.error("Error fetching reviews:", err));
   }, [spotId]);
 
   if (!spot) {
@@ -21,8 +33,6 @@ const SpotDetails = () => {
     alert("Feature Coming Soon...");
   };
 
-  // Ensure that spot.Reviews is an array before mapping
-  const reviews = Array.isArray(spot.Reviews) ? spot.Reviews : [];
 
   return (
     <div className="spot-details">
@@ -65,15 +75,29 @@ const SpotDetails = () => {
         <div className="review-summary">
           <p>⭐ {spot.avgStarRating || 0} • {spot.numReviews || 0} reviews</p>
         </div>
+
+        {/* Show each review */}
         <div className="review-list">
-          {reviews.map(review => (
-            <div key={review.id} className="review">
-              <p><strong>{review.User?.firstName}</strong> {review.createdAt}</p>
-              <p>{review.review}</p>
-            </div>
-          ))}
-        </div>
-        <button className="post-review-btn">Post Your Review</button>
+  {reviews.map(review => (
+    <div key={review.id} className="review">
+      {/* User's first name */}
+      <p><strong>{review.User?.firstName || 'Anonymous'}</strong></p>
+
+      {/* Review date */}
+      <p className="review-date">
+        {new Date(review.createdAt).toLocaleDateString()}
+      </p>
+
+      {/* Review comment */}
+      <p>{review.review}</p>
+    </div>
+  ))}
+</div>
+        
+        {/* Conditionally render the Post Review button */}
+        {user && (
+          <button className="post-review-btn">Post Your Review</button>
+        )}
       </div>
     </div>
   );

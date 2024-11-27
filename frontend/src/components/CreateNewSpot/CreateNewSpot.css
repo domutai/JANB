@@ -1,0 +1,130 @@
+.create-spot-container {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .create-spot-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .create-spot-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  .create-spot-container p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .create-spot-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .create-spot-container label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .create-spot-container input,
+  .create-spot-container textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+  }
+  
+  .create-spot-container textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .create-spot-container .inline-fields {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .create-spot-container .inline-fields label {
+    flex: 1;
+  }
+  
+  .create-spot-container .price-input {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .create-spot-container .price-input span {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .create-spot-container .error {
+    font-size: 0.8rem;
+    color: red;
+    margin-top: 5px;
+  }
+  
+  .create-spot-container .submit-button {
+    background-color: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .create-spot-container .submit-button:hover {
+    background-color: #e63950;
+  }
+  
+  .create-spot-container input::placeholder,
+  .create-spot-container textarea::placeholder {
+    font-size: 0.85rem;
+    color: #aaa;
+  }
+  
+  .create-spot-container section {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+  }
+  
+  .create-spot-container section:first-of-type {
+    border-top: none;
+  }
+  
+  .create-spot-container input:not([type="submit"]),
+  .create-spot-container textarea {
+    margin-bottom: 15px;
+  }
+  
+  .create-spot-container input[type="text"]:focus,
+  .create-spot-container textarea:focus,
+  .create-spot-container input[type="number"]:focus {
+    outline: none;
+    border-color: #ff385c;
+  }
+  
+  .create-spot-container input[type="text"]:focus::placeholder,
+  .create-spot-container textarea:focus::placeholder,
+  .create-spot-container input[type="number"]:focus::placeholder {
+    color: transparent;
+  }
+  

@@ -36,12 +36,25 @@ router.post(
           }
         }
       });
-  
-      if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-        const err = new Error(/*'Login failed'*/ 'Invalid credentials');
+      //removed for frontend
+      // if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
+      //   const err = new Error( 'Invalid credentials');
+      //   err.status = 401;
+      //   return next(err);
+      // }
+
+      //added for frontend
+      if (!user) {
+        const err = new Error('Invalid credentials');
         err.status = 401;
-        /*err.title = 'Login failed';*/
-        /*err.errors = { credential: 'The provided credentials were invalid.' };*/
+        err.errors = { credential: 'Valid Email or username is required' }; // Adding error for credential field
+        return next(err);
+      }
+      //added for frontend
+      if (!bcrypt.compareSync(password, user.hashedPassword.toString())) {
+        const err = new Error('Invalid credentials');
+        err.status = 401;
+        err.errors = { password: 'Incorrect password' }; // Adding error for password field
         return next(err);
       }
   

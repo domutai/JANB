@@ -133,6 +133,27 @@
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
   }
+
+  .review {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .review p {
+    margin: 5px 0;
+  }
+  
+  .review-date {
+    font-size: 0.9rem; /* Slightly smaller font size */
+    color: #888; /* Gray color for distinction */
+    margin-top: -5px; /* Optional: Pull it closer to the name */
+    margin-bottom: 10px; /* Space below the date */
+  }
+  
+  .review-comment {
+    font-size: 1rem;
+    color: #333;
+  }
   
   .post-review-btn {
     background-color: #28a745;

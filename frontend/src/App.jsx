@@ -7,6 +7,7 @@ import * as sessionActions from './store/session';
 import Navigation from './components/Navigation';
 import SpotGrid from './components/SpotGrid';
 import SpotDetails from './components/SpotDetails';
+import CreateNewSpot from './components/CreateNewSpot';
 
 
 function Layout() {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <SpotGrid />
         //element: <h1>Welcome!</h1> //removed after authenicate me frontend
+      },
+      {
+        path: '/spots',
+        element: <CreateNewSpot />
       },
       {
         path: '/spots/:spotId',

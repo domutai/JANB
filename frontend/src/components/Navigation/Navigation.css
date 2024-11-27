@@ -71,6 +71,19 @@
   .navigation-item {
     margin-left: auto; /* Ensures the item stays on the right */
   }
+
+  /* Style for the "Create a New Spot" link */
+.navigation-list .create-new-spot {
+  margin-top: 8px; /* Moves this specific item down */
+  margin-right: 16px; /* Optional: add a little space to the right of the link */
+}
+
+/* Style for the "Create a New Spot" link */
+.navigation-list .create-new-spot a {
+  text-decoration: none; /* Remove the underline */
+  color: inherit; /* Optional: makes sure the text color is consistent with other links */
+}
+
   
   .profile-dropdown {
     position: absolute;

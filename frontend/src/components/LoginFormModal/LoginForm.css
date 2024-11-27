@@ -1,27 +1,94 @@
+/* Style for the form */
 form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-  
-  button {
-    padding: 0.5rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  p {
-    color: red;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px; /* Add a max-width to the form for better control */
+  width: 100%;
+  margin: 0 auto; /* Center the form horizontally */
+}
+
+/* Style for the labels */
+label {
+  display: block; /* Ensure labels are block elements */
+  margin-bottom: 5px; /* Add some space between label and input */
+  font-size: 14px; /* Optional: adjust font size */
+  font-weight: bold; /* Optional: make the label text bold */
+}
+
+/* Style for input fields */
+input {
+  margin-bottom: 15px; /* Space below the input field */
+  padding: 8px;
+  width: 100%; /* Make the input take the full width of the form */
+  box-sizing: border-box; /* Ensure padding doesn't make the input overflow */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Style for the button */
+button {
+  background-color: #4CAF50; /* Green color for active state */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Ensure the button takes the full width of the form */
+}
+
+/* Hover effect for the button */
+button:hover {
+  background-color: #45a049; /* Slightly darker green when hovered */
+}
+
+/* Style for the button when it is disabled */
+button:disabled {
+  background-color: #ddd; /* Gray color for disabled state */
+  color: #bbb;
+  cursor: not-allowed; /* Change cursor to show it's not clickable */
+}
+
+/* Focus style for accessibility */
+button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue glow when focused */
+}
+
+/* Center the "Log In" text */
+h1 {
+  text-align: center;
+  margin-bottom: 20px; /* Optional: adds space below the heading */
+}
+
+/* Error message styling */
+p {
+  color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.demo-user-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.demo-user-btn:hover {
+  background-color: #0056b3;
+}

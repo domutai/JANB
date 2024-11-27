@@ -77,12 +77,21 @@ function Navigation({ isLoaded }) {
     </div>
     </NavLink>
     <ul className="navigation-list">
-      {isLoaded && (
-        <li className="navigation-item">
-          <ProfileButton user={sessionUser} />
+  {isLoaded && (
+    <>
+      {/* Only show "Create a New Spot" link if the user is logged in */}
+      {sessionUser && (
+        <li className="navigation-item create-new-spot">
+          <NavLink to="/spots">Create a New Spot</NavLink> {/* New link added */}
         </li>
       )}
-    </ul>
+      {/* Profile button is available to all users */}
+      <li className="navigation-item">
+        <ProfileButton user={sessionUser} />
+      </li>
+    </>
+  )}
+</ul>
     </nav>
   );
 }
