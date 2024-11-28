@@ -30,24 +30,25 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Add a XSRF-TOKEN cookie in development
-if (process.env.NODE_ENV !== 'production') {
-  router.get('/api/csrf/restore', (req, res) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    return res.json({});
-  });
-}
+// Add a XSRF-TOKEN cookie in development, after frontend
+// if (process.env.NODE_ENV !== 'production') {
+//   router.get('/api/csrf/restore', (req, res) => {
+//     res.cookie('XSRF-TOKEN', req.csrfToken());
+//     return res.json({});
+//   });
+// }
 
 router.post('/api/test', (req, res) => {
   console.log(req.body);  // Log the request body to see if it's being passed correctly
   res.json({ requestBody: req.body });  // Send the body back to the frontend for testing
 });
 
-// router.get('/api/csrf/restore', (req, res) => {
-//   const csrfToken = req.csrfToken();
-//   res.cookie("XSRF-TOKEN", csrfToken);
-//   res.status(200).json({ 'XSRF-Token': csrfToken });
-// });
+//Original before frontend
+router.get('/api/csrf/restore', (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.cookie("XSRF-TOKEN", csrfToken);
+  res.status(200).json({ 'XSRF-Token': csrfToken });
+});
 
 router.get('/hello/world', function(req, res) {
   res.cookie('XSRF-TOKEN', req.csrfToken());

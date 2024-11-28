@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './CreateNewSpot.css';
@@ -18,8 +18,29 @@ function CreateNewSpot() {
     images: ['', '', '', ''],
   });
   const [errors, setErrors] = useState({});
+  const [csrfToken, setCsrfToken] = useState('');
   const sessionUser = useSelector((state) => state.session.user);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch('/api/csrf/restore', { credentials: 'include' });
+        if (response.ok) {
+          const data = await response.json();
+          console.log('CSRF Token Data:', data); // Debugging
+          setCsrfToken(data['XSRF-Token']); // Adjust to match the backend response
+        } else {
+          console.error('Failed to fetch CSRF token:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    };
+  
+    fetchCsrfToken();
+  }, []);
+  
 
   if (!sessionUser) {
     navigate('/');
@@ -43,52 +64,88 @@ function CreateNewSpot() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Log CSRF Token for debugging
+  console.log('CSRF Token:', csrfToken);
+
+
+    const validationErrors = {};
+
+    // Required fields validation
+    if (!formData.country.trim()) validationErrors.country = 'Country is required';
+    if (!formData.address.trim()) validationErrors.address = 'Address is required';
+    if (!formData.city || !formData.city.trim()) validationErrors.city = 'City is required';
+    if (!formData.state || !formData.state.trim()) validationErrors.state = 'State is required';
+    if (formData.latitude === '' || isNaN(Number(formData.latitude))) validationErrors.latitude = 'Latitude is required';
+    if (formData.longitude === '' || isNaN(Number(formData.longitude))) validationErrors.longitude = 'Longitude is required';
+    if (!formData.description.trim()) {
+      validationErrors.description = 'Description is required';
+    } else if (formData.description.trim().length < 30) {
+      validationErrors.description = 'Description needs 30 or more characters';
+    }
+    if (!formData.title.trim()) validationErrors.title = 'Name is required';
+    if (!formData.price) validationErrors.price = 'Price is required';
+    if (!formData.previewImage.trim()) {
+      validationErrors.previewImage = 'Preview image URL is required';
+    } else if (!/\.(png|jpg|jpeg)$/i.test(formData.previewImage.trim())) {
+      validationErrors.previewImage = 'Image URL needs to end in png or jpg (or jpeg)';
+    }
+
+    // Additional images validation
+    formData.images.forEach((image, index) => {
+      if (image.trim() && !/\.(png|jpg|jpeg)$/i.test(image.trim())) {
+        validationErrors[`image_${index}`] = 'Image URL needs to end in png or jpg (or jpeg)';
+      }
+    });
+
+    // Check if there are validation errors
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     // Map frontend form field names to backend field names
     const backendData = {
       address: formData.address,
       city: formData.city,
       state: formData.state,
       country: formData.country,
-      lat: formData.latitude,  // Map 'latitude' to 'lat'
-      lng: formData.longitude, // Map 'longitude' to 'lng'
-      name: formData.title,    // Map 'title' to 'name'
+      lat: formData.latitude,
+      lng: formData.longitude,
+      name: formData.title,
       description: formData.description,
       price: formData.price,
     };
 
-    // Get the CSRF token from the document (assuming it's stored in a meta tag)
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Log backend data for debugging
+  console.log('Backend Data:', backendData);
 
-    // Check if the CSRF token exists
-    if (!csrfToken) {
-      console.error('CSRF token not found');
-      return;
-    }
+    try {
+      // Send the mapped data to the backend with CSRF token in headers
+      const response = await fetch('/api/spots', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'csrf-token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify(backendData),
+      });
 
-    // Send the mapped data to the backend with CSRF token in headers
-    const response = await fetch('/api/spots', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'csrf-token': csrfToken,  // Include CSRF token in the headers
-      },
-      body: JSON.stringify(backendData),
-      credentials: 'include', // Ensure cookies are sent with the request
-    });
-
-    if (response.ok) {
-      const newSpot = await response.json();
-      navigate(`/spots/${newSpot.id}`);
-    } else {
-      const data = await response.json();
-      if (data.errors) {
-        const backendErrors = {};
-        // Map backend validation errors to frontend state format
-        data.errors.forEach((error) => {
-          backendErrors[error.param] = error.msg;
-        });
-        setErrors(backendErrors);
+      if (response.ok) {
+        const newSpot = await response.json();
+        navigate(`/spots/${newSpot.id}`);
+      } else {
+        const data = await response.json();
+        if (data.errors) {
+          const backendErrors = {};
+          data.errors.forEach((error) => {
+            backendErrors[error.param] = error.msg;
+          });
+          setErrors(backendErrors);
+        }
       }
+    } catch (error) {
+      console.error('An error occurred while creating the spot:', error);
     }
   };
 
@@ -99,29 +156,33 @@ function CreateNewSpot() {
         <section>
           <h2>Where&#39;s your place located?</h2>
           <p>Guests will only get your exact address once they booked a reservation.</p>
-          <label>
-            Country
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              placeholder="Country"
-            />
-          </label>
-          {errors.country && <p className="error">{errors.country}</p>}
+          <div className="inline-field-group">
+  <div className="label-error-container">
+    <label>Country</label>
+    {errors.country && <span className="error-message">{errors.country}</span>}
+  </div>
+  <input
+    type="text"
+    name="country"
+    value={formData.country}
+    onChange={handleChange}
+    placeholder="Country"
+  />
+</div>
 
-          <label>
-            Street Address
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Address"
-            />
-          </label>
-          {errors.address && <p className="error">{errors.address}</p>}
+<div className="form-row">
+  <div className="label-container">
+    <label>Street Address</label>
+    {errors.address && <p className="error-message">{errors.address}</p>}
+  </div>
+  <input
+    type="text"
+    name="address"
+    value={formData.address}
+    onChange={handleChange}
+    placeholder="Address"
+  />
+</div>
 
           <div className="inline-fields">
             <label>
@@ -132,8 +193,10 @@ function CreateNewSpot() {
                 value={formData.city}
                 onChange={handleChange}
                 placeholder="City"
+                className="input-medium"
               />
             </label>
+            {errors.city && <p className="error">{errors.city}</p>} 
             <label>
               State
               <input
@@ -141,9 +204,11 @@ function CreateNewSpot() {
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
-                placeholder="STATE"
+                placeholder="State"
+                className="input-small"
               />
             </label>
+            {errors.state && <p className="error">{errors.state}</p>} 
           </div>
 
           <div className="inline-fields">
@@ -155,8 +220,10 @@ function CreateNewSpot() {
                 value={formData.latitude}
                 onChange={handleChange}
                 placeholder="Latitude"
+                className="input-small"
               />
             </label>
+            {errors.latitude && <p className="error">{errors.latitude}</p>} 
             <label>
               Longitude
               <input
@@ -165,31 +232,31 @@ function CreateNewSpot() {
                 value={formData.longitude}
                 onChange={handleChange}
                 placeholder="Longitude"
+                className="input-small"
               />
             </label>
+            {errors.longitude && <p className="error">{errors.longitude}</p>} 
           </div>
         </section>
 
         <section>
           <h2>Describe your place to guests</h2>
           <p>
-            Mention the best features of your space, any special amenities like fast WiFi or parking, and what you
-            love about the neighborhood.
+            Mention the best features of your space, any special amenities like fast WiFi or parking, and what you love
+            about the neighborhood.
           </p>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Please write at least 30 characters"
+            placeholder="Description"
           ></textarea>
           {errors.description && <p className="error">{errors.description}</p>}
         </section>
 
         <section>
           <h2>Create a title for your spot</h2>
-          <p>
-            Catch guests&#39; attention with a spot title that highlights what makes your place special.
-          </p>
+          <p>Catch guests&#39; attention with a spot title that highlights what makes your place special.</p>
           <input
             type="text"
             name="title"
@@ -202,9 +269,7 @@ function CreateNewSpot() {
 
         <section>
           <h2>Set a base price for your spot</h2>
-          <p>
-            Competitive pricing can help your listing stand out and rank higher in search results.
-          </p>
+          <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
           <div className="price-input">
             <span>$</span>
             <input
@@ -231,13 +296,15 @@ function CreateNewSpot() {
           {errors.previewImage && <p className="error">{errors.previewImage}</p>}
 
           {formData.images.map((image, index) => (
-            <input
-              key={index}
-              type="text"
-              value={image}
-              onChange={(e) => handleImageChange(index, e.target.value)}
-              placeholder={`Image URL`}
-            />
+            <div key={index}>
+              <input
+                type="text"
+                value={image}
+                onChange={(e) => handleImageChange(index, e.target.value)}
+                placeholder={`Image URL`}
+              />
+              {errors[`image_${index}`] && <p className="error">{errors[`image_${index}`]}</p>}
+            </div>
           ))}
         </section>
 

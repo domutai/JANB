@@ -56,12 +56,64 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    
   }
   
   .create-spot-container .inline-fields label {
     flex: 1;
   }
-  
+
+  .create-spot-container .inline-field-group {
+    display: flex;
+  flex-direction: column; /* Stack label + error and input vertically */
+  margin-bottom: 10px;
+}
+
+.create-spot-container .label-error-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; /* Align label and error text properly */
+  margin-bottom: 5px; /* Space between label/error and the input field */
+}
+
+.create-spot-container .label-error-container label {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.create-spot-container .label-error-container .error-message {
+  font-size: 0.8rem;
+  color: red;
+  margin-right: 200px; /* Space between label and error */
+  white-space: nowrap; /* Prevents wrapping of the error message */
+
+}
+
+.create-spot-container .form-row {
+  display: flex;
+  flex-direction: column; /* Keeps label and input in a column layout */
+  margin-bottom: 15px;
+}
+
+.create-spot-container .form-row .label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; /* Align label and error message properly */
+  margin-bottom: 5px;
+}
+
+.create-spot-container .form-row .label-container label {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.create-spot-container .form-row .label-container .error-message {
+  font-size: 0.8rem;
+  color: red;
+  white-space: nowrap; /* Prevent wrapping of the error message */
+  margin-right: 150px; /* Space between label and error */
+}
+
   .create-spot-container .price-input {
     display: flex;
     align-items: center;
@@ -100,6 +152,13 @@
     font-size: 0.85rem;
     color: #aaa;
   }
+
+  .create-spot-container .description-error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
   
   .create-spot-container section {
     border-top: 1px solid #ccc;
