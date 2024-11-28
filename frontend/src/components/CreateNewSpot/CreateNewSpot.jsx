@@ -133,21 +133,77 @@ function CreateNewSpot() {
 
       if (response.ok) {
         const newSpot = await response.json();
-        navigate(`/spots/${newSpot.id}`);
-      } else {
-        const data = await response.json();
-        if (data.errors) {
+
+        // Step 2: Add the preview image
+        try {
+          const previewResponse = await fetch(`/api/spots/${newSpot.id}/images`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'csrf-token': csrfToken,
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                  url: formData.previewImage,
+                  preview: true,
+              }),
+          });
+
+          if (!previewResponse.ok) {
+              const previewError = await previewResponse.json();
+              setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  previewImage: previewError.message || 'Failed to upload preview image',
+              }));
+          }
+      } catch (error) {
+          console.error('Error adding preview image:', error);
+      }
+
+      // Step 3: Add additional images
+      for (const image of formData.images) {
+          if (image.trim()) {
+              try {
+                  const imageResponse = await fetch(`/api/spots/${newSpot.id}/images`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'csrf-token': csrfToken,
+                      },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                          url: image,
+                          preview: false, // Additional images are not marked as preview
+                      }),
+                  });
+
+                  if (!imageResponse.ok) {
+                      const imageError = await imageResponse.json();
+                      console.error('Error adding image:', imageError.message);
+                  }
+              } catch (error) {
+                  console.error('Error adding image:', error);
+              }
+          }
+      }
+
+      // Redirect to the new spot page
+      navigate(`/spots/${newSpot.id}`);
+  } else {
+      const data = await response.json();
+      if (data.errors) {
           const backendErrors = {};
           data.errors.forEach((error) => {
-            backendErrors[error.param] = error.msg;
+              backendErrors[error.param] = error.msg;
           });
           setErrors(backendErrors);
-        }
       }
-    } catch (error) {
-      console.error('An error occurred while creating the spot:', error);
-    }
-  };
+  }
+} catch (error) {
+  console.error('Error creating spot:', error);
+}
+};
+
 
   return (
     <div className="create-spot-container">

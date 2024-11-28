@@ -33,6 +33,7 @@ const SpotDetails = () => {
     alert("Feature Coming Soon...");
   };
 
+  const isSpotOwner = user && spot.Owner?.id === user.id; // Check if the logged-in user is the spot owner
 
   return (
     <div className="spot-details">
@@ -63,7 +64,9 @@ const SpotDetails = () => {
         <div className="price-rating">
           <div className="price-rating-row">
             <p className="price">${spot.price}<span className="per-night"> / night</span></p>
-            <p className="rating">⭐ {spot.avgStarRating || 0} • {spot.numReviews || 0} reviews</p>
+            <p className="rating">{spot.numReviews > 0
+    ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews} reviews`
+    : '⭐ New'}</p>
           </div>
           <button className="reserve-btn" onClick={handleReserveClick}>Reserve</button>
         </div>
@@ -73,12 +76,15 @@ const SpotDetails = () => {
       <div className="reviews">
         <h2>Reviews</h2>
         <div className="review-summary">
-          <p>⭐ {spot.avgStarRating || 0} • {spot.numReviews || 0} reviews</p>
+          <p>{spot.numReviews > 0
+    ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews} reviews`
+    : '⭐ New'}</p>
         </div>
 
         {/* Show each review */}
         <div className="review-list">
-  {reviews.map(review => (
+    {reviews.length > 0 ? (
+      reviews.map(review => (
     <div key={review.id} className="review">
       {/* User's first name */}
       <p><strong>{review.User?.firstName || 'Anonymous'}</strong></p>
@@ -91,11 +97,14 @@ const SpotDetails = () => {
       {/* Review comment */}
       <p>{review.review}</p>
     </div>
-  ))}
+    ))
+  ) : (
+    !isSpotOwner && <p>Be the first to post a review!</p>
+  )}
 </div>
         
         {/* Conditionally render the Post Review button */}
-        {user && (
+        {!isSpotOwner && user && (
           <button className="post-review-btn">Post Your Review</button>
         )}
       </div>
