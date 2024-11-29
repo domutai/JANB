@@ -277,7 +277,7 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * Route path: /users/:userId/spots (changed to /users/current to pass MOCHA tests)
+  * Route path: /users/:userId/spots (changed to /spots/current to pass MOCHA tests)
   * Body: none
 
 * Successful Response

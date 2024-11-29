@@ -1,0 +1,85 @@
+.manage-spots {
+    padding: 20px;
+  }
+  
+  .manage-spots h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .create-spot-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 200px;
+  }
+  
+  .create-spot-btn:hover {
+    background-color: #e14a4f;
+  }
+  
+  .spot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .spot-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .spot-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .spot-info {
+    padding: 10px;
+  }
+  
+  .spot-info h2 {
+    font-size: 18px;
+    margin: 0 0 5px;
+  }
+  
+  .spot-info p {
+    margin: 0;
+  }
+  
+  .spot-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  .spot-actions button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .spot-actions button:hover {
+    background-color: #0056b3;
+  }
+  
+  .spot-actions button:last-child {
+    background-color: #dc3545;
+  }
+  
+  .spot-actions button:last-child:hover {
+    background-color: #b02a37;
+  }
+  

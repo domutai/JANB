@@ -180,7 +180,7 @@ function ProfileButton({ user }) {
   };
 
   const goToManageSpots = () => {
-    navigate('/manage-spots'); // Navigate to Manage Spots page
+    navigate('/spots/current'); // Navigate to Manage Spots page
     closeMenu(); // Close the menu after navigation
   };
 

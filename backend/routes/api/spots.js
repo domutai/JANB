@@ -159,6 +159,15 @@ router.get('/current', requireAuth, async (req, res) => {
   try {
     const spots = await Spot.findAll({
       where: { ownerId: userId },
+      include: [
+        {
+          model: SpotImage,
+          as: 'images', // Alias used in the model association
+          attributes: ['url', 'preview'],
+          where: { preview: true }, // Only fetch preview images
+          required: false, // Include Spot even if it has no images
+        },
+      ],
     });
 
     if (!spots || spots.length === 0) {
