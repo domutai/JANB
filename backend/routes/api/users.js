@@ -110,4 +110,20 @@ router.post(
     });
   
 
+//Added during frontend to put first names in reviews
+// Route to fetch all users
+router.get('/', requireAuth, async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'firstName'], // Only fetch the required fields
+    });
+
+    return res.status(200).json({ Users: users });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;

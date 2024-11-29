@@ -43,7 +43,7 @@ module.exports = {
         description: 'Sunny beach house with ocean views',
         price: 250,
         avgRating: 4.7,
-        previewImage: 'https://i.pinimg.com/originals/fb/44/7b/fb447bb6547ef7928e50b2167483970f.jpg',
+        previewImage: '',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

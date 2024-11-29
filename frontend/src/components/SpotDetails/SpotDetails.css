@@ -158,11 +158,11 @@
   .post-review-btn {
     background-color: #28a745;
     color: white;
-    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 1px;
+    width: 150px;
   }
   
   .post-review-btn:hover {

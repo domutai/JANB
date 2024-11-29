@@ -41,9 +41,64 @@ module.exports = {
       },
       {
         spotId: 2,
+        url: 'https://i.pinimg.com/originals/fb/44/7b/fb447bb6547ef7928e50b2167483970f.jpg',
+        preview: true
+      },
+      {
+        spotId: 2,
         url: 'https://st.hzcdn.com/simgs/pictures/patios/zen-beach-house-allen-construction-img~3051770206bb7479_4-3401-1-d80c868.jpg',
         preview: false
-      }
+      },
+      {
+        spotId: 2,
+        url: 'https://st.hzcdn.com/simgs/pictures/patios/zen-beach-house-allen-construction-img~3051770206bb7479_4-3401-1-d80c868.jpg',
+        preview: false
+      },
+      {
+        spotId: 2,
+        url: 'https://st.hzcdn.com/simgs/pictures/patios/zen-beach-house-allen-construction-img~3051770206bb7479_4-3401-1-d80c868.jpg',
+        preview: false
+      },
+      {
+        spotId: 2,
+        url: 'https://st.hzcdn.com/simgs/pictures/patios/zen-beach-house-allen-construction-img~3051770206bb7479_4-3401-1-d80c868.jpg',
+        preview: false
+      },
+      {
+        spotId: 3,
+        url: 'https://www.fortuny.shop/wp-content/uploads/2019/09/Fortuny-Lamps-in-Tribeca.jpg',
+        preview: true
+      },
+      {
+        spotId: 3,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 3,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 3,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 3,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 4,
+        url: 'https://www.fortuny.shop/wp-content/uploads/2019/09/Fortuny-Lamps-in-Tribeca.jpg',
+        preview: true
+      },
+      {
+        spotId: 5,
+        url: 'https://www.fortuny.shop/wp-content/uploads/2019/09/Fortuny-Lamps-in-Tribeca.jpg',
+        preview: true
+      },
     ], {});
   },
 
