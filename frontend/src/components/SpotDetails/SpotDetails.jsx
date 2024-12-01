@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import ReviewModal from '../ReviewModal/ReviewModal';
+import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal';
 import './SpotDetails.css';
 
 const SpotDetails = () => {
@@ -9,9 +10,10 @@ const SpotDetails = () => {
   const [spot, setSpot] = useState(null);
   const [reviews, setReviews] = useState([]); // State for reviews
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
+  const [reviewToDelete, setReviewToDelete] = useState(null); // Review to delete
   const [csrfToken, setCsrfToken] = useState(''); // State for CSRF token
   const [userLookup, setUserLookup] = useState({}); // UserId to firstName map
-
 
   const user = useSelector((state) => state.session.user); // Access the logged-in user
 
@@ -22,8 +24,8 @@ const SpotDetails = () => {
       .catch(err => console.error("Error fetching spot details:", err));
   }, [spotId]);
 
-   // Fetch reviews for the spot
-   useEffect(() => {
+  // Fetch reviews for the spot
+  useEffect(() => {
     fetch(`/api/spots/${spotId}/reviews`)
       .then(res => res.json())
       .then(data => setReviews(data.Reviews || [])) // Assign reviews from the response
@@ -49,29 +51,6 @@ const SpotDetails = () => {
     fetchCsrfToken();
   }, []);
 
-  
-  // const handleReviewSubmit = async (newReview) => {
-  //   try {
-  //     const response = await fetch(`/api/spots/${spotId}/reviews`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify(newReview),
-  //     });
-
-  //     if (response.ok) {
-  //       const review = await response.json();
-  //       // Update the reviews list with the new review
-  //       setReviews([...reviews, review]);
-  //       setShowModal(false); // Close the modal
-  //     } else {
-  //       const errorData = await response.json();
-  //       console.error("Failed to submit review:", errorData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting review:", error);
-  //   }
-  // };
-
   // Fetch user lookup table
   useEffect(() => {
     const fetchUserLookup = async () => {
@@ -91,50 +70,94 @@ const SpotDetails = () => {
     fetchUserLookup();
   }, []);
 
-  if (!spot) {
-    return <p>Loading spot details...</p>;
-  }
-
   const handleReserveClick = () => {
     alert("Feature Coming Soon...");
   };
 
   const handleReviewSubmit = async (reviewData) => {
-      const response = await fetch(`/api/spots/${spotId}/reviews`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'csrf-token': csrfToken, // Include the CSRF token here
-        },
-        credentials: 'include',
-        body: JSON.stringify(reviewData),
-      });
+    const response = await fetch(`/api/spots/${spotId}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'csrf-token': csrfToken, // Include the CSRF token here
+      },
+      credentials: 'include',
+      body: JSON.stringify(reviewData),
+    });
 
-      if (response.ok) {
-        const newReview = await response.json();
-        setReviews((prevReviews) => [newReview, ...prevReviews]); // Add the new review to the list
+    if (response.ok) {
+      const newReview = await response.json();
+      setReviews((prevReviews) => [newReview, ...prevReviews]); // Add the new review to the list
 
-        // Calculate the new average rating
-        const updatedReviewCount = reviews.length + 1;
-        const updatedAvgRating =
+      // Calculate the new average rating
+      const updatedReviewCount = reviews.length + 1;
+      const updatedAvgRating =
         (spot.avgStarRating * reviews.length + newReview.stars) / updatedReviewCount;
 
-        // Update the spot details with new review count and rating
-        setSpot((prevSpot) => ({
+      // Update the spot details with new review count and rating
+      setSpot((prevSpot) => ({
         ...prevSpot,
         numReviews: updatedReviewCount,
         avgStarRating: updatedAvgRating,
-        }));
+      }));
 
-        setShowModal(false); // Close the modal
-      } else {
-        const errorData = await response.json();
-        console.error('Error submitting review:', errorData);
-        throw new Error(errorData.message || 'Failed to submit review');
-      }
+      setShowModal(false); // Close the modal
+    } else {
+      const errorData = await response.json();
+      console.error('Error submitting review:', errorData);
+      throw new Error(errorData.message || 'Failed to submit review');
+    }
   };
 
-  const isSpotOwner = user && spot.Owner?.id === user.id; // Check if the logged-in user is the spot owner
+  const handleDeleteReview = async () => {
+    if (!reviewToDelete) return;
+  
+    try {
+      const response = await fetch(`/api/reviews/${reviewToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'csrf-token': csrfToken,
+        },
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        // Update the state to remove the deleted review
+        setReviews((prevReviews) =>
+          prevReviews.filter((review) => review.id !== reviewToDelete)
+        );
+  
+        // Update the spot's review count and average rating
+        const deletedReview = reviews.find((review) => review.id === reviewToDelete);
+        const updatedReviewCount = reviews.length - 1;
+        const updatedAvgRating =
+          updatedReviewCount > 0
+            ? (spot.avgStarRating * reviews.length - deletedReview.stars) /
+              updatedReviewCount
+            : 0;
+  
+        setSpot((prevSpot) => ({
+          ...prevSpot,
+          numReviews: updatedReviewCount,
+          avgStarRating: updatedAvgRating,
+        }));
+  
+        setShowDeleteModal(false); // Close the modal
+        setReviewToDelete(null); // Reset the review to delete
+      } else {
+        console.error('Failed to delete review');
+      }
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
+  };
+
+  const isSpotOwner = user && spot?.Owner?.id === user?.id; // Check if the logged-in user is the spot owner
+
+  if (!spot) {
+    return <p>Loading spot details...</p>;
+  }
 
   return (
     <div className="spot-details">
@@ -148,7 +171,7 @@ const SpotDetails = () => {
       <div className="spot-images">
         <img src={spot.SpotImages?.[0]?.url || ''} alt={spot.name} className="main-image" />
         <div className="additional-images">
-          {spot.SpotImages?.slice(1, 5)?.map(image => (
+          {spot.SpotImages?.slice(1, 5)?.map((image) => (
             <img key={image.id} src={image.url} alt="spot" className="additional-image" />
           ))}
         </div>
@@ -157,7 +180,7 @@ const SpotDetails = () => {
       {/* Spot Info */}
       <div className="spot-info">
         <div className="host-details">
-          <h1>Hosted by {spot.Owner?.firstName} {spot.Owner?.lastName}</h1>
+          <h1>Hosted by {spot?.Owner?.firstName || ''} {spot?.Owner?.lastName || ''}</h1>
           <p>{spot.description}</p>
         </div>
 
@@ -165,11 +188,11 @@ const SpotDetails = () => {
         <div className="price-rating">
           <div className="price-rating-row">
             <p className="price">${spot.price}<span className="per-night"> / night</span></p>
-            <p className="rating">{spot.numReviews > 0
-    ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews}  ${
-      spot.numReviews === 1 ? 'review' : 'reviews'
-    }`
-    : '⭐ New'}</p>
+            <p className="rating">
+              {spot.numReviews > 0
+                ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews} ${spot.numReviews === 1 ? 'review' : 'reviews'}`
+                : '⭐ New'}
+            </p>
           </div>
           <button className="reserve-btn" onClick={handleReserveClick}>Reserve</button>
         </div>
@@ -179,11 +202,11 @@ const SpotDetails = () => {
       <div className="reviews">
         <h2>Reviews</h2>
         <div className="review-summary">
-          <p>{spot.numReviews > 0
-    ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews}  ${
-      spot.numReviews === 1 ? 'review' : 'reviews'
-    }`
-    : '⭐ New'}</p>
+          <p>
+            {spot.numReviews > 0
+              ? `⭐ ${spot.avgStarRating.toFixed(2)} • ${spot.numReviews} ${spot.numReviews === 1 ? 'review' : 'reviews'}`
+              : '⭐ New'}
+          </p>
         </div>
 
         {/* Conditionally render the Post Review button */}
@@ -193,33 +216,46 @@ const SpotDetails = () => {
 
         {/* Show each review */}
         <div className="review-list">
-    {reviews.length > 0 ? (
-      reviews.map(review => (
-    <div key={review.id} className="review">
-      {/* Translate userId to firstName using the lookup */}
-      <p><strong>{userLookup[review.userId] || 'Anonymous'}</strong></p>
-      
-
-      {/* Review date */}
-      <p className="review-date">
-        {new Date(review.createdAt).toLocaleDateString()}
-      </p>
-
-      {/* Review comment */}
-      <p>{review.review}</p>
-    </div>
-    ))
-  ) : (
-    !isSpotOwner && <p>Be the first to post a review!</p>
-  )}
-</div>    
+          {reviews.length > 0 ? (
+            reviews.map((review) => (
+              <div key={review.id} className="review">
+                <p><strong>{userLookup[review.userId] || 'Anonymous'}</strong></p>
+                <p className="review-date">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </p>
+                <p>{review.review}</p>
+                {review.userId === user?.id && (
+                  <button
+                    className="delete-review-btn"
+                    onClick={() => {
+                      setReviewToDelete(review.id);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            ))
+          ) : (
+            !isSpotOwner && <p>Be the first to post a review!</p>
+          )}
+        </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal for Posting Review */}
       {showModal && (
         <ReviewModal
           onClose={() => setShowModal(false)}
           onSubmit={handleReviewSubmit}
+        />
+      )}
+
+      {/* Modal for Deleting Review */}
+      {showDeleteModal && (
+        <DeleteReviewModal
+          onClose={() => setShowDeleteModal(false)}
+          onDelete={handleDeleteReview}
         />
       )}
     </div>
