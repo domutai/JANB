@@ -32,7 +32,9 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "http://localhost:8000"], // Allow scripts from your local server
         connectSrc: ["'self'", "http://localhost:8000"], // Allow connections to your local server
-        // You can add more directives as needed, e.g., imgSrc, styleSrc, etc.
+        imgSrc: ["'self'", "data:", "https:"], // Allow images from self, data URIs, and HTTPS URLs
+        styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for now (if necessary)
+        fontSrc: ["'self'", "https:"], // Allow fonts from self and HTTPS URLs
       },
     })
   );
