@@ -122,8 +122,9 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
 
       const avgRating =
     spot.reviews.length > 0
-      ? spot.reviews.reduce((sum, review) => sum + review.stars, 0) / spot.reviews.length
-      : 0;
+    numReviews > 0
+    ? (spot.reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews).toFixed(1)
+    : "New";
 
       return {
         id: spot.id,
@@ -140,7 +141,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         //avgRating: spot.avgRating, (before render)
-        avgRating: avgRating > 0 ? avgRating.toFixed(1) : "New", // Ensure correct avgRating display
+        avgRating, // Dynamically calculated or set to "New"
         //previewImage: spot.previewImage, (before frontend)
         previewImage: spot.images?.[0]?.url || null, // Fetch preview image dynamically
       };
