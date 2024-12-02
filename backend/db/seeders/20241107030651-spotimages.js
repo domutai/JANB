@@ -216,9 +216,49 @@ module.exports = {
         preview: true
       },
       {
+        spotId: 4,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 4,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 4,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 4,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
         spotId: 5,
         url: 'https://www.fortuny.shop/wp-content/uploads/2019/09/Fortuny-Lamps-in-Tribeca.jpg',
         preview: true
+      },
+      {
+        spotId: 5,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 5,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 5,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
+      },
+      {
+        spotId: 5,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPiYMyMBqFyYLiJz1-MAWhsZ87hqG-f3ZXsw&s',
+        preview: false
       },
     ], { schema: options.schema });
   },
