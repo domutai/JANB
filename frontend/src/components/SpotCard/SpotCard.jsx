@@ -4,9 +4,10 @@ import './SpotCard.css';
 const SpotCard = ({ spot, showActions = false, onUpdate, onDelete }) => {
   // Safely handle avgRating
   const displayRating =
-    typeof spot.avgRating === 'number' && spot.avgRating > 0
-      ? spot.avgRating.toFixed(1)
-      : "New";
+  spot.avgRating === 0 
+      ? "New"
+      : spot.avgRating.toFixed(1); // Format only for valid numbers greater than 0
+
 
   return (
     <div className="spot-card-container">
