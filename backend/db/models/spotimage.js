@@ -45,7 +45,8 @@ module.exports = (sequelize) => {
   SpotImage.associate = (models) => {
     SpotImage.belongsTo(models.Spot, {
       foreignKey: 'spotId',
-      as: 'spot',
+      //as: 'spot', (render issues, try to fix)
+      as: 'images',
       onDelete: 'CASCADE',
     });
   };
