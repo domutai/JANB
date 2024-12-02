@@ -141,7 +141,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         //avgRating: spot.avgRating, (before render)
-        avgRating, // Dynamically calculated or set to "New"
+        avgRating: spot.avgRating, // Dynamically calculated or set to "New"
         //previewImage: spot.previewImage, (before frontend)
         previewImage: spot.images?.[0]?.url || null, // Fetch preview image dynamically
       };
