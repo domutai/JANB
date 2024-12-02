@@ -279,7 +279,7 @@ const SpotDetails = () => {
               <div key={review.id} className="review">
                 <p><strong>{review.User?.firstName || 'Anonymous'}</strong></p>
                 <p className="review-date">
-                  {new Date(review.createdAt).toLocaleDateString()}
+                  {new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
                 </p>
                 <p>{review.review}</p>
                 {review.userId === user?.id && (

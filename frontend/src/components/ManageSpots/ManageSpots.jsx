@@ -206,7 +206,7 @@ const ManageSpots = () => {
 
   return (
     <div className="manage-spots">
-      <h1>Manage Your Spots</h1>
+      <h1>Manage Spots</h1>
       <button
         className="create-spot-btn"
         onClick={() => navigate('/spots')}

@@ -125,7 +125,7 @@ const ManageReviews = () => {
         reviews.map((review) => (
           <div key={review.id} className="review-card">
             <h2>{review.Spot?.name || 'Spot Name Not Available'}</h2>
-            <p className="review-date">{new Date(review.createdAt).toLocaleDateString()}</p>
+            <p className="review-date">{new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
             <p className="review-text">{review.review}</p>
             <div className="review-actions">
               <button

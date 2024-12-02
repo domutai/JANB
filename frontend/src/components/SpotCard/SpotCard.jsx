@@ -37,7 +37,7 @@ const SpotCard = ({ spot, showActions = false, onUpdate, onDelete }) => {
           <div className="spot-card-details">
             <div className="spot-card-header">
               <h2>{spot.city}, {spot.state}</h2>
-              <span className="spot-rating">⭐ {spot.avgRating || "N/A"}</span>
+              <span className="spot-rating">⭐ {spot.avgRating === null || spot.avgRating === undefined || spot.avgRating === 0 ? "New" : spot.avgRating.toFixed(1)}</span>
             </div>
             <p>${spot.price}/night</p>
           </div>

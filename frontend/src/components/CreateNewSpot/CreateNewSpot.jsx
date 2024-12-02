@@ -305,7 +305,7 @@ function CreateNewSpot() {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Description"
+            placeholder="Please write at least 30 characters"
           ></textarea>
           {errors.description && <p className="error">{errors.description}</p>}
         </section>
