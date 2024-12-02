@@ -47,7 +47,7 @@ router.post(
       if (!user) {
         const err = new Error('Invalid credentials');
         err.status = 401;
-        err.errors = { credential: 'Valid Email or username is required' }; // Adding error for credential field
+        err.errors = { credential: /*'Valid Email or username is required'*/ 'The provided credentials were invalid' }; // Adding error for credential field
         return next(err);
       }
       //added for frontend

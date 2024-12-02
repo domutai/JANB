@@ -177,6 +177,7 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    window.location = '/'; // Redirect to homepage
   };
 
   const goToManageSpots = () => {

@@ -16,7 +16,7 @@ const SpotDetails = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
   const [reviewToDelete, setReviewToDelete] = useState(null); // Review to delete
   const [csrfToken, setCsrfToken] = useState(''); // State for CSRF token
-  const [userLookup, setUserLookup] = useState({}); // UserId to firstName map
+  //const [userLookup, setUserLookup] = useState({}); // UserId to firstName map
 
   const user = useSelector((state) => state.session.user); // Access the logged-in user
 
@@ -55,23 +55,23 @@ const SpotDetails = () => {
   }, []);
 
   // Fetch user lookup table
-  useEffect(() => {
-    const fetchUserLookup = async () => {
-      try {
-        const response = await fetch('/api/users'); // Adjust this route based on your backend
-        const data = await response.json();
-        const lookup = data.Users.reduce((acc, user) => {
-          acc[user.id] = user.firstName;
-          return acc;
-        }, {});
-        setUserLookup(lookup);
-      } catch (error) {
-        console.error("Error fetching user lookup:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserLookup = async () => {
+  //     try {
+  //       const response = await fetch('/api/users'); // Adjust this route based on your backend
+  //       const data = await response.json();
+  //       const lookup = data.Users.reduce((acc, user) => {
+  //         acc[user.id] = user.firstName;
+  //         return acc;
+  //       }, {});
+  //       setUserLookup(lookup);
+  //     } catch (error) {
+  //       console.error("Error fetching user lookup:", error);
+  //     }
+  //   };
 
-    fetchUserLookup();
-  }, []);
+  //   fetchUserLookup();
+  // }, []);
 
   const handleReserveClick = () => {
     alert("Feature Coming Soon...");
@@ -90,7 +90,17 @@ const SpotDetails = () => {
 
     if (response.ok) {
       const newReview = await response.json();
-      setReviews((prevReviews) => [newReview, ...prevReviews]); // Add the new review to the list
+
+      // Attach the logged-in user's name to the review
+    const userInfo = {
+      id: user.id, // Grab user data from Redux or state
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
+    const newReviewWithUser = { ...newReview, User: userInfo };
+
+      setReviews((prevReviews) => [newReviewWithUser, ...prevReviews]); // Add the new review to the list
 
       // Calculate the new average rating
       const updatedReviewCount = reviews.length + 1;
@@ -267,7 +277,7 @@ const SpotDetails = () => {
           {reviews.length > 0 ? (
             reviews.map((review) => (
               <div key={review.id} className="review">
-                <p><strong>{userLookup[review.userId] || 'Anonymous'}</strong></p>
+                <p><strong>{review.User?.firstName || 'Anonymous'}</strong></p>
                 <p className="review-date">
                   {new Date(review.createdAt).toLocaleDateString()}
                 </p>
