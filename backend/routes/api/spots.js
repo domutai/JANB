@@ -121,10 +121,9 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
       const avgRating =
-    spot.reviews.length > 0
-    numReviews > 0
-    ? (spot.reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews).toFixed(1)
-    : "New";
+      spot.reviews.length > 0
+      ? spot.reviews.reduce((sum, review) => sum + review.stars, 0) / spot.reviews.length
+      : 0; // Default to 0 if no reviews
 
       return {
         id: spot.id,
@@ -141,7 +140,7 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
         //avgRating: spot.avgRating, (before render)
-        avgRating: spot.avgRating, // Dynamically calculated or set to "New"
+        avgRating: avgRating.toFixed(1), // Format the average rating
         //previewImage: spot.previewImage, (before frontend)
         previewImage: spot.images?.[0]?.url || null, // Fetch preview image dynamically
       };
