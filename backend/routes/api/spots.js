@@ -108,12 +108,22 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         where: { preview: true }, // Only fetch preview images
         required: false, // Include Spot even if it has no images
       },
+      {
+        model: Review,
+        as: 'reviews',
+        attributes: ['stars'], // Fetch star ratings
+      },
     ],
   });
 
     const formattedSpots = spots.map(spot => {
       const formattedCreatedAt = moment(spot.createdAt).format('YYYY-MM-DD HH:mm:ss');
       const formattedUpdatedAt = moment(spot.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+      const avgRating =
+    spot.reviews.length > 0
+      ? spot.reviews.reduce((sum, review) => sum + review.stars, 0) / spot.reviews.length
+      : 0;
 
       return {
         id: spot.id,
@@ -129,7 +139,8 @@ if (maxPrice) spotQuery.where.price = { [Op.lte]: parseFloat(maxPrice) };
         price: parseFloat(spot.price),
         createdAt: formattedCreatedAt,
         updatedAt: formattedUpdatedAt,
-        avgRating: spot.avgRating,
+        //avgRating: spot.avgRating, (before render)
+        avgRating: avgRating > 0 ? avgRating.toFixed(1) : "New", // Ensure correct avgRating display
         //previewImage: spot.previewImage, (before frontend)
         previewImage: spot.images?.[0]?.url || null, // Fetch preview image dynamically
       };
