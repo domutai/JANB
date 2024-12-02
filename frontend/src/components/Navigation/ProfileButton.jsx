@@ -184,6 +184,11 @@ function ProfileButton({ user }) {
     closeMenu(); // Close the menu after navigation
   };
 
+  const goToManageReviews = () => {
+    navigate('/reviews/current'); // Navigate to Manage Reviews page
+    closeMenu(); // Close the menu after navigation
+  };
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
@@ -199,6 +204,9 @@ function ProfileButton({ user }) {
            <li>
              <button onClick={goToManageSpots}>Manage Spots</button>
            </li>
+           <li>
+              <button onClick={goToManageReviews}>Manage Reviews</button>
+            </li>
            <li>
              <button onClick={logout}>Log Out</button>
            </li>

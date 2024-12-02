@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import ReviewModal from '../ReviewModal/ReviewModal';
 import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal';
+import UpdateReviewModal from '../UpdateReviewModal/UpdateReviewModal'; 
 import './SpotDetails.css';
 
 const SpotDetails = () => {
@@ -10,6 +11,8 @@ const SpotDetails = () => {
   const [spot, setSpot] = useState(null);
   const [reviews, setReviews] = useState([]); // State for reviews
   const [showModal, setShowModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [reviewToUpdate, setReviewToUpdate] = useState(null); // Review to update
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
   const [reviewToDelete, setReviewToDelete] = useState(null); // Review to delete
   const [csrfToken, setCsrfToken] = useState(''); // State for CSRF token
@@ -153,6 +156,51 @@ const SpotDetails = () => {
     }
   };
 
+  const handleUpdateReview = async (updatedData) => {
+    try {
+      const response = await fetch(`/api/reviews/${reviewToUpdate.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'csrf-token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        const updatedReview = await response.json();
+
+        // Update the reviews state with the updated review
+        setReviews((prevReviews) =>
+          prevReviews.map((review) =>
+            review.id === updatedReview.id ? updatedReview : review
+          )
+        );
+
+        // Recalculate the average rating
+      const updatedReviewList = reviews.map((review) =>
+        review.id === updatedReview.id ? updatedReview : review
+      );
+      const totalStars = updatedReviewList.reduce((sum, review) => sum + review.stars, 0);
+      const updatedAvgRating = totalStars / updatedReviewList.length;
+
+      // Update the spot's average rating and keep other details intact
+      setSpot((prevSpot) => ({
+        ...prevSpot,
+        avgStarRating: updatedAvgRating,
+      }));
+
+      setShowUpdateModal(false); // Close the modal
+      setReviewToUpdate(null); // Reset the review state
+    } else {
+      console.error('Failed to update review');
+    }
+  } catch (error) {
+    console.error('Error updating review:', error);
+  }
+};
+
   const isSpotOwner = user && spot?.Owner?.id === user?.id; // Check if the logged-in user is the spot owner
 
   if (!spot) {
@@ -225,6 +273,15 @@ const SpotDetails = () => {
                 </p>
                 <p>{review.review}</p>
                 {review.userId === user?.id && (
+                  <>
+                  <button
+                    onClick={() => {
+                      setReviewToUpdate(review);
+                      setShowUpdateModal(true);
+                    }}
+                  >
+                    Update
+                  </button>
                   <button
                     className="delete-review-btn"
                     onClick={() => {
@@ -234,6 +291,7 @@ const SpotDetails = () => {
                   >
                     Delete
                   </button>
+                  </>
                 )}
               </div>
             ))
@@ -248,6 +306,17 @@ const SpotDetails = () => {
         <ReviewModal
           onClose={() => setShowModal(false)}
           onSubmit={handleReviewSubmit}
+        />
+      )}
+
+      {/* Modal for Updating Review */}
+      {showUpdateModal && reviewToUpdate && (
+        <UpdateReviewModal
+          initialReview={reviewToUpdate.review}
+          initialStars={reviewToUpdate.stars}
+          spotName={spot.name}
+          onClose={() => setShowUpdateModal(false)}
+          onUpdate={handleUpdateReview}
         />
       )}
 
